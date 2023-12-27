@@ -18,6 +18,7 @@ const ResetPassword: React.FC<ResetPasswordProps> = () => {
         autoClose: 3000,
         theme: "dark",
       });
+      console.log("Successfully sent reset email!");
     }
   };
 
