@@ -1,3 +1,4 @@
+import AutoCode from "@/components/AutoCode/AutoCode";
 import Navbar from "@/components/Navbar/Navbar";
 import React from "react";
 
@@ -8,6 +9,7 @@ const AuthPage: React.FC<AuthPageProps> = () => {
     <div className="bg-gradient-to-b from-black to-black h-screen relative">
       <div className="max-w-7xl mx-auto ">
         <Navbar />
+        <AutoCode />
       </div>
     </div>
   );
