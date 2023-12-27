@@ -22,9 +22,11 @@ const SignUp: React.FC<SignUpProps> = () => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   }
 
-  function handleRegister(e: React.ChangeEvent<HTMLInputElement>) {
+  function handleRegister(e: React.ChangeEvent<HTMLFormElement>) {
     e.preventDefault();
+    console.log(inputs);
   }
+
   return (
     <form className="space-y-6 px-6 pb-4" onSubmit={handleRegister}>
       <h3 className="text-2xl font-semibold text-black">Sign-Up to CodeIt</h3>
