@@ -3,10 +3,14 @@ import { IoClose } from "react-icons/io5";
 import Login from "./Login";
 import SignUp from "./SignUp";
 import ResetPassword from "./ResetPassword";
+import { useRecoilValue } from "recoil";
+import { authModalState } from "@/atoms/authModalAtom";
 
 type AuthModalProps = {};
 
 const AuthModal: React.FC<AuthModalProps> = () => {
+  // Getting our state
+  const authModal = useRecoilValue(authModalState);
   return (
     <>
       <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-60"></div>
@@ -21,7 +25,14 @@ const AuthModal: React.FC<AuthModalProps> = () => {
                 <IoClose className="h-5 w-5" />
               </button>
             </div>
-            <ResetPassword />
+            {/* Showing the modal based on its type */}
+            {authModal.type === "login" ? (
+              <Login />
+            ) : authModal.type === "register" ? (
+              <SignUp />
+            ) : (
+              <ResetPassword />
+            )}
           </div>
         </div>
       </div>
