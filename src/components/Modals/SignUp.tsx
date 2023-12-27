@@ -11,22 +11,17 @@ type SignUpProps = {};
 
 const SignUp: React.FC<SignUpProps> = () => {
   const setAuthModalState = useSetRecoilState(authModalState);
-
-  const handleClick = (type: string) => {
+  const handleClick = () => {
     setAuthModalState((prev) => ({ ...prev, type: "login" }));
   };
-
   const [inputs, setInputs] = useState({
     email: "",
     displayName: "",
     password: "",
   });
-
   const router = useRouter();
-
   const [createUserWithEmailAndPassword, user, loading, error] =
     useCreateUserWithEmailAndPassword(auth);
-
   const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -40,12 +35,10 @@ const SignUp: React.FC<SignUpProps> = () => {
         position: "top-center",
         toastId: "loadingToast",
       });
-
       const newUser = await createUserWithEmailAndPassword(
         inputs.email,
         inputs.password
       );
-
       if (!newUser) return;
       const userData = {
         uid: newUser.user.uid,
@@ -58,9 +51,7 @@ const SignUp: React.FC<SignUpProps> = () => {
         solvedProblems: [],
         starredProblems: [],
       };
-
       await setDoc(doc(firestore, "users", newUser.user.uid), userData);
-
       router.push("/");
     } catch (error: any) {
       toast.error(error.message, { position: "top-center" });
@@ -147,7 +138,7 @@ const SignUp: React.FC<SignUpProps> = () => {
         <a
           href="#"
           className="text-blue-700 hover:underline"
-          onClick={() => handleClick("login")}
+          onClick={handleClick}
         >
           Log In
         </a>
