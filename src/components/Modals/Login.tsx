@@ -1,8 +1,16 @@
+import { authModalState } from "@/atoms/authModalAtom";
 import React from "react";
+import { useSetRecoilState } from "recoil";
 
 type LoginProps = {};
+
 const loading = false;
 const Login: React.FC<LoginProps> = () => {
+  // Getting our state
+  const setAuthModal = useSetRecoilState(authModalState);
+  function handleClick(type: "login" | "register" | "forgotPassword") {
+    setAuthModal((prev) => ({ ...prev, type }));
+  }
   return (
     <form className="space-y-6 px-6 pb-4">
       <h3 className="text-2xl font-semibold text-black">Sign in to CodeIt</h3>
@@ -51,7 +59,10 @@ const Login: React.FC<LoginProps> = () => {
       >
         {loading ? "Loading..." : "Log In"}
       </button>
-      <button className="flex w-full justify-end">
+      <button
+        className="flex w-full justify-end"
+        onClick={() => handleClick("forgotPassword")}
+      >
         <a
           href="#"
           className="text-sm block text-blue-700 hover:underline w-full text-right"
@@ -61,7 +72,11 @@ const Login: React.FC<LoginProps> = () => {
       </button>
       <div className="text-sm font-medium text-gray-900">
         Not Registered?{" "}
-        <a href="#" className="text-blue-700 hover:underline">
+        <a
+          href="#"
+          className="text-blue-700 hover:underline"
+          onClick={() => handleClick("register")}
+        >
           Create account
         </a>
       </div>
