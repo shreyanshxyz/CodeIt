@@ -61,7 +61,7 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
         <div className="flex items-center space-x-4 flex-1 justify-end">
           <div>
             <a
-              href="https://www.buymeacoffee.com/burakorkmezz"
+              href="https://www.github.com/shreyanshxyz/codeit"
               target="_blank"
               rel="noreferrer"
               className="bg-dark-fill-3 py-1.5 px-3 cursor-pointer rounded text-gray-200 hover:bg-dark-fill-2"
