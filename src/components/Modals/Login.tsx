@@ -6,7 +6,7 @@ const Login: React.FC<LoginProps> = () => {
   return (
     <form className="space-y-6 px-6 pb-4">
       <h3 className="text-2xl font-semibold text-black items-center">
-        Sign in to LeetClone
+        Sign in to CodeIt
       </h3>
       <div>
         <label
@@ -47,7 +47,7 @@ const Login: React.FC<LoginProps> = () => {
 
       <button
         type="submit"
-        className="w-full text-white focus:ring-blue-300 font-medium rounded-lg
+        className="w-full text-white focus:ring-green-300 font-medium rounded-lg
                 text-sm px-5 py-2.5 text-center  bg-green-600 hover:bg-green-800
             "
       >
