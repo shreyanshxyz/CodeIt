@@ -26,7 +26,7 @@ const Workspace: React.FC<WorkspaceProps> = ({ problem }) => {
         />
         {success && (
           <Confetti
-            gravity={0.3}
+            gravity={0.4}
             tweenDuration={4000}
             width={width - 1}
             height={height - 1}
