@@ -1,16 +1,32 @@
 import { authModalState } from "@/atoms/authModalAtom";
-import React from "react";
+import React, { useState } from "react";
 import { useSetRecoilState } from "recoil";
 
 type SignUpProps = {};
 const loading = false;
 const SignUp: React.FC<SignUpProps> = () => {
   const setAuthModal = useSetRecoilState(authModalState);
+
   function handleClick(type: string) {
     setAuthModal((prev) => ({ ...prev, type: "login" }));
   }
+
+  const [inputs, setInputs] = useState({
+    email: "",
+    displayName: "",
+    password: "",
+  });
+
+  function handleChangeInput(e: React.ChangeEvent<HTMLInputElement>) {
+    // It will check the name of the input i.e. "Email/Password/Display Name", and change it, not mutating the others
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  }
+
+  function handleRegister(e: React.ChangeEvent<HTMLInputElement>) {
+    e.preventDefault();
+  }
   return (
-    <form className="space-y-6 px-6 pb-4">
+    <form className="space-y-6 px-6 pb-4" onSubmit={handleRegister}>
       <h3 className="text-2xl font-semibold text-black">Sign-Up to CodeIt</h3>
       <div>
         <label
@@ -20,6 +36,7 @@ const SignUp: React.FC<SignUpProps> = () => {
           Email
         </label>
         <input
+          onChange={handleChangeInput}
           type="email"
           name="email"
           id="email"
@@ -38,6 +55,7 @@ const SignUp: React.FC<SignUpProps> = () => {
           Display Name
         </label>
         <input
+          onChange={handleChangeInput}
           type="displayName"
           name="displayName"
           id="displayName"
@@ -56,6 +74,7 @@ const SignUp: React.FC<SignUpProps> = () => {
           Password
         </label>
         <input
+          onChange={handleChangeInput}
           type="password"
           name="password"
           id="password"
