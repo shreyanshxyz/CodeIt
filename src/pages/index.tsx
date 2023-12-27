@@ -28,7 +28,7 @@ export default function Home() {
           )}
           <table className="text-sm text-left text-gray-500 dark:text-gray-400 sm:w-7/12 w-full max-w-[1200px] mx-auto">
             {!loadingProblems && (
-              <thead className="text-xs text-gray-700 uppercase dark:text-gray-400 border-b ">
+              <thead className="text-xs text-gray-700 uppercase dark:text-gray-200 border-b justify-center">
                 <tr>
                   <th scope="col" className="px-1 py-3 w-0 font-medium">
                     Status
