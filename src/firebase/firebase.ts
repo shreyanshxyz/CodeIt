@@ -19,7 +19,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase
-const app = !getApps ? initializeApp(firebaseConfig) : getApp();
+const app = initializeApp(firebaseConfig);
 const analytics = getAnalytics(app);
 const auth = getAuth(app);
 const firestore = getFirestore(app);
