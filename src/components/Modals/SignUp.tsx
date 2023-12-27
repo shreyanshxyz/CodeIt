@@ -27,6 +27,8 @@ const SignUp: React.FC<SignUpProps> = () => {
     console.log(inputs);
   }
 
+  console.log(inputs);
+
   return (
     <form className="space-y-6 px-6 pb-4" onSubmit={handleRegister}>
       <h3 className="text-2xl font-semibold text-black">Sign-Up to CodeIt</h3>
