@@ -1,5 +1,9 @@
 import { authModalState } from "@/atoms/authModalAtom";
-import React from "react";
+import { auth } from "@/firebase/firebase";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { toast } from "react-toastify";
 import { useSetRecoilState } from "recoil";
 
 type LoginProps = {};
@@ -7,12 +11,54 @@ type LoginProps = {};
 const loading = false;
 const Login: React.FC<LoginProps> = () => {
   // Getting our state
-  const setAuthModal = useSetRecoilState(authModalState);
-  function handleClick(type: "login" | "register" | "forgotPassword") {
-    setAuthModal((prev) => ({ ...prev, type }));
-  }
+  const setAuthModalState = useSetRecoilState(authModalState);
+
+  const handleClick = (type: "login" | "register" | "forgotPassword") => {
+    setAuthModalState((prev) => ({ ...prev, type }));
+  };
+
+  const [inputs, setInputs] = useState({ email: "", password: "" });
+
+  const [signInWithEmailAndPassword, user, loading, error] =
+    useSignInWithEmailAndPassword(auth);
+
+  const router = useRouter();
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInputs((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (!inputs.email || !inputs.password)
+      return alert("Please fill all fields");
+    try {
+      const newUser = await signInWithEmailAndPassword(
+        inputs.email,
+        inputs.password
+      );
+      if (!newUser) return;
+      router.push("/");
+    } catch (error: any) {
+      toast.error(error.message, {
+        position: "top-center",
+        autoClose: 3000,
+        theme: "dark",
+      });
+    }
+  };
+
+  useEffect(() => {
+    if (error)
+      toast.error(error.message, {
+        position: "top-center",
+        autoClose: 3000,
+        theme: "dark",
+      });
+  }, [error]);
+
   return (
-    <form className="space-y-6 px-6 pb-4">
+    <form className="space-y-6 px-6 pb-4" onSubmit={handleLogin}>
       <h3 className="text-2xl font-semibold text-black">Sign in to CodeIt</h3>
       <div>
         <label
@@ -22,6 +68,7 @@ const Login: React.FC<LoginProps> = () => {
           Your Email
         </label>
         <input
+          onChange={handleInputChange}
           type="email"
           name="email"
           id="email"
@@ -40,6 +87,7 @@ const Login: React.FC<LoginProps> = () => {
           Your Password
         </label>
         <input
+          onChange={handleInputChange}
           type="password"
           name="password"
           id="password"
