@@ -1,5 +1,5 @@
 import Topbar from "@/components/Topbar/Topbar";
-// import Workspace from "@/components/Workspace/Workspace";
+import Workspace from "@/components/Workspace/Workspace";
 import useHasMounted from "@/hooks/useHasMounted";
 import { problems } from "@/utils/problems";
 import { Problem } from "@/utils/types/problem";
@@ -17,7 +17,7 @@ const ProblemPage: React.FC<ProblemPageProps> = ({ problem }) => {
   return (
     <div>
       <Topbar problemPage />
-      {/* <Workspace problem={problem} /> */}
+      <Workspace problem={problem} />
     </div>
   );
 };
