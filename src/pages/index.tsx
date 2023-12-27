@@ -1,8 +1,10 @@
+import Topbar from "@/components/Topbar/Topbar";
+
 export default function Home() {
   return (
     <>
-      <main>
-        <h1>Helloo</h1>
+      <main className="bg bg-zinc-950 min-h-screen">
+        <Topbar />
       </main>
     </>
   );
