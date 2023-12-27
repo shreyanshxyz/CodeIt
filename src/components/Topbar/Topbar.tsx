@@ -8,6 +8,8 @@ import { authModalState } from "@/atoms/authModalAtom";
 import { useSetRecoilState } from "recoil";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRouter } from "next/router";
+import Timer from "../Timer/Timer";
+import Logout from "../Buttons/Logout";
 
 type TopbarProps = {
   problemPage?: boolean;
@@ -83,10 +85,7 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
               </button>
             </Link>
           )}
-          {
-            user && problemPage
-            //   && <Timer />
-          }
+          {user && problemPage && <Timer />}
           {user && (
             <div className="cursor-pointer group relative">
               <Image
@@ -105,7 +104,7 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
               </div>
             </div>
           )}
-          {/* {user && <Logout />} */}
+          {user && <Logout />}
         </div>
       </div>
     </nav>
