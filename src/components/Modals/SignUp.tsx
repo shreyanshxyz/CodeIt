@@ -61,7 +61,6 @@ const SignUp: React.FC<SignUpProps> = () => {
 
       // await setDoc(doc(firestore, "users", newUser.user.uid), userData);
 
-      // router.refresh();
       router.push("/");
     } catch (error: any) {
       toast.error(error.message, { position: "top-center" });
