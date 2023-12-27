@@ -1,4 +1,5 @@
 import AutoCode from "@/components/AutoCode/AutoCode";
+import AuthModal from "@/components/Modals/AuthModal";
 import Navbar from "@/components/Navbar/Navbar";
 import React from "react";
 
@@ -10,6 +11,7 @@ const AuthPage: React.FC<AuthPageProps> = () => {
       <div className="max-w-7xl mx-auto ">
         <Navbar />
         <AutoCode />
+        <AuthModal />
       </div>
     </div>
   );
