@@ -1,4 +1,6 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# CodeIt
+
+CodeIt is an interactive coding platform that provides a seamless environment for coding practice. With a built-in code editor, a diverse set of coding problems, and integrated test cases, CodeIt is designed to enhance your coding skills and make learning fun.
 
 ## Getting Started
 
@@ -16,23 +18,55 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+## Screenshots
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Here are some screenshots from the CodeIt project:
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+- Screenshot 1
+  ![main_page.png](https://pasteimg.com/images/2023/12/28/main_page.png)
+- Screenshot 2
+  ![auth.png](https://pasteimg.com/images/2023/12/28/auth.png)
+- Screenshot 3
+  ![confetti.png](https://pasteimg.com/images/2023/12/28/confetti.png)
+- Screenshot 4
+  ![playground.png](https://pasteimg.com/images/2023/12/28/playground.png)
+- Screenshot 5
+  ![problemset.png](https://pasteimg.com/images/2023/12/28/problemset.png)
 
-## Learn More
+## Environment Variables (.env)
 
-To learn more about Next.js, take a look at the following resources:
+Create a `.env` file in the root of your project and add the following variables:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```env
+NEXT_PUBLIC_FIREBASE_API_KEY=
+NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
+NEXT_PUBLIC_FIREBASE_PROJECT_ID=
+NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
+NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
+NEXT_PUBLIC_FIREBASE_APP_ID=
+NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=
+RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED=
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## Dependencies
 
-## Deploy on Vercel
+CodeIt relies on the following dependencies:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+###### Dependencies:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- firebase
+- next
+- react-confetti
+- react-firebase-hooks
+- react-icons
+- react-split
+- react-toastify
+- react-youtube
+- recoil
+- typescript
+
+###### Dev Dependencies:
+
+- autoprefixer
+- postcss
+- tailwindcss
