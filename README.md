@@ -4,14 +4,32 @@ CodeIt is an interactive coding platform that provides a seamless environment fo
 
 ## Getting Started
 
-First, run the development server:
+First, clone the repo:
+
+```bash
+git clone https://github.com/shreyanshxyz/CodeIt
+```
+
+Then, navigate to the cloned folder:
+
+```bash
+cd CodeIt
+```
+
+Then, install all the dependencies:
+
+```bash
+npm install
+# or
+yarn install
+```
+
+Then finally, run the app in development:
 
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
@@ -35,7 +53,7 @@ Here are some screenshots from the CodeIt project:
 
 ## Environment Variables (.env)
 
-Create a `.env` file in the root of your project and add the following variables:
+Create a `.env.local` file in the root of your project and add the following variables:
 
 ```env
 NEXT_PUBLIC_FIREBASE_API_KEY=
