@@ -40,16 +40,16 @@ You can start editing the page by modifying `pages/index.tsx`. The page auto-upd
 
 Here are some screenshots from the CodeIt project:
 
-- Screenshot 1
+- Main Page
   ![main_page.png](https://pasteimg.com/images/2023/12/28/main_page.png)
-- Screenshot 2
+- Authentication
   ![auth.png](https://pasteimg.com/images/2023/12/28/auth.png)
-- Screenshot 3
-  ![confetti.png](https://pasteimg.com/images/2023/12/28/confetti.png)
-- Screenshot 4
-  ![playground.png](https://pasteimg.com/images/2023/12/28/playground.png)
-- Screenshot 5
+- Problem
   ![problemset.png](https://pasteimg.com/images/2023/12/28/problemset.png)
+- Code Playground
+  ![playground.png](https://pasteimg.com/images/2023/12/28/playground.png)
+- Confetti
+  ![confetti.png](https://pasteimg.com/images/2023/12/28/confetti.png)
 
 ## Environment Variables (.env)
 
