@@ -52,7 +52,7 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
         }`}
       >
         <Link href="/" className="h-[22px] flex-1">
-          <p className="text-white">Logo</p>
+          <p className="text-white font-bold">CodeIt</p>
         </Link>
 
         {problemPage && (
