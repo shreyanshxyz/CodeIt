@@ -13,9 +13,13 @@ export type Problem = {
   id: string;
   title: string;
   difficulty: Difficulty;
+  category?: string;
+  tags?: string[];
+  acceptanceRate?: number;
+  totalSubmissions?: string;
   problemStatement: string;
   examples: Example[];
-  constraints: string;
+  constraints: string | string[];
   order: number;
   starterCode: string;
   handlerFunction: ((fn: any) => boolean) | string;
