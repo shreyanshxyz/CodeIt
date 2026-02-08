@@ -1,6 +1,6 @@
 import React from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import { BsList } from "react-icons/bs";
+import { BsList, BsGithub } from "react-icons/bs";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { problems } from "@/utils/problems";
@@ -35,54 +35,59 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
       router.push(`/problems/${nextProblemKey}`);
     }
   };
+
   return (
-    <nav className="relative flex h-[50px] w-full shrink-0 items-center px-5 bg-black text-dark-gray-7 border-b-gray-300 border-b-2">
+    <nav className="relative flex h-[50px] w-full shrink-0 items-center px-5 bg-black-pure border-b border-border-subtle">
       <div
         className={`flex w-full items-center justify-between ${
           !problemPage ? "max-w-[1200px] mx-auto" : ""
         }`}
       >
-        <Link href="/" className="h-[22px] flex-1">
-          <p className="text-white font-bold">CodeIt</p>
+        <Link
+          href="/"
+          className="h-[22px] flex-1 flex items-center gap-2 group"
+        >
+          <span className="text-text-primary font-bold text-lg tracking-tight">
+            CodeIt
+          </span>
         </Link>
 
         {problemPage && (
-          <div className="flex items-center gap-4 flex-1 justify-center">
-            <div
-              className="flex items-center justify-center rounded bg-dark-fill-3 hover:bg-dark-fill-2 h-8 w-8 cursor-pointer"
+          <div className="flex items-center gap-2 flex-1 justify-center">
+            <button
+              className="flex items-center justify-center rounded bg-black-surface hover:bg-black-hover h-8 w-8 cursor-pointer transition-all duration-150"
               onClick={() => handleProblemChange(false)}
+              aria-label="Previous problem"
             >
-              <FaChevronLeft />
-            </div>
+              <FaChevronLeft className="text-text-secondary" />
+            </button>
             <Link
               href="/"
-              className="flex items-center gap-2 font-medium max-w-[170px] text-dark-gray-8 cursor-pointer"
+              className="flex items-center gap-2 font-medium max-w-[170px] text-text-secondary hover:text-text-primary cursor-pointer transition-all duration-150"
             >
-              <div>
-                <BsList />
-              </div>
-              <p>Problem List</p>
+              <BsList className="text-lg" />
+              <span className="text-sm">Problem List</span>
             </Link>
-            <div
-              className="flex items-center justify-center rounded bg-dark-fill-3 hover:bg-dark-fill-2 h-8 w-8 cursor-pointer"
+            <button
+              className="flex items-center justify-center rounded bg-black-surface hover:bg-black-hover h-8 w-8 cursor-pointer transition-all duration-150"
               onClick={() => handleProblemChange(true)}
+              aria-label="Next problem"
             >
-              <FaChevronRight />
-            </div>
+              <FaChevronRight className="text-text-secondary" />
+            </button>
           </div>
         )}
 
         <div className="flex items-center space-x-4 flex-1 justify-end">
-          <div>
-            <a
-              href="https://www.github.com/shreyanshxyz/codeit"
-              target="_blank"
-              rel="noreferrer"
-              className="bg-dark-fill-3 py-1.5 px-3 cursor-pointer rounded text-gray-200 hover:bg-dark-fill-2"
-            >
-              Github
-            </a>
-          </div>
+          <a
+            href="https://www.github.com/shreyanshxyz/codeit"
+            target="_blank"
+            rel="noreferrer"
+            className="flex items-center gap-2 bg-black-surface hover:bg-black-hover py-1.5 px-3 cursor-pointer rounded text-text-secondary hover:text-text-primary transition-all duration-150 text-sm"
+          >
+            <BsGithub className="text-base" />
+            <span>GitHub</span>
+          </a>
         </div>
       </div>
     </nav>
