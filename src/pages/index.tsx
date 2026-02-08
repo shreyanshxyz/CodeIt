@@ -8,39 +8,51 @@ export default function Home() {
   const hasMounted = useHasMounted();
 
   if (!hasMounted) return null;
+
   return (
     <>
-      <main className="bg bg-zinc-950 min-h-screen">
+      <main className="bg-black-pure min-h-screen">
         <Topbar />
-        <h1
-          className="text-2xl font-extrabold text-center text-gray-100 dark:text-gray-200 
-					uppercase mt-10 mb-5 underline underline-offset-8 decoration-2"
-        >
-          Problemset
-        </h1>
-        <div className="relative overflow-x-auto mx-auto px-6 pb-10">
-          {loadingProblems && (
-            <div className="max-w-[1200px] mx-auto sm:w-7/12 w-full animate-pulse">
-              {[...Array(10)].map((_, idx) => (
-                <LoadingSkeleton key={idx} />
-              ))}
-            </div>
-          )}
-          <table className="text-sm text-left text-gray-500 dark:text-gray-400 sm:w-7/12 w-full max-w-[1200px] mx-auto">
-            {!loadingProblems && (
-              <thead className="text-xs text-gray-700 uppercase dark:text-gray-200 border-b justify-center">
-                <tr>
-                  <th scope="col" className="px-1 py-3 w-0 font-medium">
-                    Status
-                  </th>
-                  <th scope="col" className="px-6 py-3 w-0 font-medium">
-                    Title
-                  </th>
-                </tr>
-              </thead>
+        <div className="max-w-[1200px] mx-auto px-6 py-10">
+          <h1 className="text-2xl font-bold text-text-primary mb-8 border-b border-border-subtle pb-4">
+            Problemset
+          </h1>
+          <div className="relative overflow-x-auto">
+            {loadingProblems && (
+              <div className="animate-pulse space-y-2">
+                {[...Array(10)].map((_, idx) => (
+                  <LoadingSkeleton key={idx} />
+                ))}
+              </div>
             )}
-            <ProblemsTable setLoadingProblems={setLoadingProblems} />
-          </table>
+            <table className="text-sm text-left w-full">
+              {!loadingProblems && (
+                <thead className="text-xs uppercase border-b border-border-subtle">
+                  <tr>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 font-medium text-text-tertiary w-12"
+                    >
+                      Status
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 font-medium text-text-tertiary"
+                    >
+                      Title
+                    </th>
+                    <th
+                      scope="col"
+                      className="px-4 py-3 font-medium text-text-tertiary w-28"
+                    >
+                      Difficulty
+                    </th>
+                  </tr>
+                </thead>
+              )}
+              <ProblemsTable setLoadingProblems={setLoadingProblems} />
+            </table>
+          </div>
         </div>
       </main>
     </>
@@ -49,12 +61,10 @@ export default function Home() {
 
 const LoadingSkeleton = () => {
   return (
-    <div className="flex items-center space-x-12 mt-4 px-6">
-      <div className="w-6 h-6 shrink-0 rounded-full bg-dark-layer-1"></div>
-      <div className="h-4 sm:w-52  w-32  rounded-full bg-dark-layer-1"></div>
-      <div className="h-4 sm:w-52  w-32 rounded-full bg-dark-layer-1"></div>
-      <div className="h-4 sm:w-52 w-32 rounded-full bg-dark-layer-1"></div>
-      <span className="sr-only">Loading...</span>
+    <div className="flex items-center space-x-4 px-4 py-3 border-b border-border-subtle">
+      <div className="w-4 h-4 shrink-0 rounded bg-black-surface"></div>
+      <div className="h-4 w-64 rounded bg-black-surface"></div>
+      <div className="h-4 w-20 rounded bg-black-surface ml-auto"></div>
     </div>
   );
 };
