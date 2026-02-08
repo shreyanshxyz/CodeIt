@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
 import { Problem } from "@/utils/types/problem";
-import { PaneHeader } from "../Shared";
+import { PaneHeader } from "../Shared/PaneHeader";
 
 interface EditorPaneProps {
   problem: Problem;
