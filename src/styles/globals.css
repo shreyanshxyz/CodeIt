@@ -49,6 +49,42 @@ body {
   background: #3a3a3a;
 }
 
+.gutter {
+  background-color: #282828;
+  background-repeat: no-repeat;
+  background-position: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.gutter:hover {
+  background-color: rgba(0, 255, 136, 0.3);
+}
+
+.gutter:active {
+  background-color: rgba(0, 255, 136, 0.5);
+}
+
+.gutter.gutter-horizontal {
+  cursor: col-resize;
+}
+
+.gutter.gutter-vertical {
+  cursor: row-resize;
+}
+
+.split {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.split > div {
+  height: 100%;
+  overflow: hidden;
+}
+
 .cm-scroller,
 .cm-gutters {
   background-color: #000000 !important;
@@ -153,4 +189,3 @@ input,
 select {
   transition: all 150ms ease;
 }
-
