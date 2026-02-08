@@ -1,5 +1,5 @@
 import Topbar from "@/components/Topbar/Topbar";
-import Workspace from "@/components/Workspace/Workspace";
+import { SplitPaneLayout } from "@/components/ProblemScreen/SplitPaneLayout/SplitPaneLayout";
 import useHasMounted from "@/hooks/useHasMounted";
 import { problems } from "@/utils/problems";
 import { Problem } from "@/utils/types/problem";
@@ -15,9 +15,11 @@ const ProblemPage: React.FC<ProblemPageProps> = ({ problem }) => {
   if (!hasMounted) return null;
 
   return (
-    <div>
+    <div className="flex flex-col h-screen bg-dark-layer-1">
       <Topbar problemPage />
-      <Workspace problem={problem} />
+      <div className="flex-1 overflow-hidden">
+        <SplitPaneLayout problem={problem} />
+      </div>
     </div>
   );
 };

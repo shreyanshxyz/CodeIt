@@ -2,12 +2,9 @@ import assert from "assert";
 import { Problem } from "../types/problem";
 
 const starterCodeTwoSum = `function twoSum(nums,target){
-  // Write your code here
 };`;
 
-// checks if the user has the correct code
 const handlerTwoSum = (fn: any) => {
-  // fn is the callback that user's code is passed into
   try {
     const nums = [
       [2, 7, 11, 15],
@@ -22,9 +19,7 @@ const handlerTwoSum = (fn: any) => {
       [0, 1],
     ];
 
-    // loop all tests to check if the user's code is correct
     for (let i = 0; i < nums.length; i++) {
-      // result is the output of the user's function and answer is the expected output
       const result = fn(nums[i], targets[i]);
       assert.deepStrictEqual(result, answers[i]);
     }
@@ -38,6 +33,7 @@ const handlerTwoSum = (fn: any) => {
 export const twoSum: Problem = {
   id: "two-sum",
   title: "1. Two Sum",
+  difficulty: "Easy",
   problemStatement: `<p class='mt-3'>
   Given an array of integers <code>nums</code> and an integer <code>target</code>, return
   <em>indices of the two numbers such that they add up to</em> <code>target</code>.
