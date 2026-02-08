@@ -1,46 +1,9 @@
 import ProblemsTable from "@/components/ProblemsTable/ProblemsTable";
 import Topbar from "@/components/Topbar/Topbar";
-// import { firestore } from "@/firebase/firebase";
 import useHasMounted from "@/hooks/useHasMounted";
-// import { doc, setDoc } from "firebase/firestore";
 import { useState } from "react";
 
 export default function Home() {
-  // Helper functions for problem adding to the firestore
-
-  // const [inputs, setInputs] = useState({
-  //   id: "",
-  //   title: "",
-  //   difficulty: "",
-  //   category: "",
-  //   videoId: "",
-  //   link: "",
-  //   order: 0,
-  //   likes: 0,
-  //   dislikes: 0,
-  // });
-
-  // function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-  //   setInputs({
-  //     ...inputs,
-  //     [e.target.name]: e.target.value,
-  //   });
-  // }
-
-  // async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
-  //   e.preventDefault();
-
-  //   const newProblem = {
-  //     ...inputs,
-  //     order: Number(inputs.order),
-  //   };
-
-  //   await setDoc(doc(firestore, "problems", inputs.id), newProblem);
-  //   alert("Saved to DB");
-  //   console.log("Saved to DB");
-  // }
-
-  // console.log(inputs);
   const [loadingProblems, setLoadingProblems] = useState(true);
   const hasMounted = useHasMounted();
 
@@ -73,72 +36,12 @@ export default function Home() {
                   <th scope="col" className="px-6 py-3 w-0 font-medium">
                     Title
                   </th>
-                  <th scope="col" className="px-6 py-3 w-0 font-medium">
-                    Difficulty
-                  </th>
-
-                  <th scope="col" className="px-6 py-3 w-0 font-medium">
-                    Category
-                  </th>
-                  <th scope="col" className="px-6 py-3 w-0 font-medium">
-                    Solution
-                  </th>
                 </tr>
               </thead>
             )}
             <ProblemsTable setLoadingProblems={setLoadingProblems} />
           </table>
         </div>
-
-        {/*  Form to add new problems to the firestore*/}
-        {/* <form
-          className="p-6 flex flex-col max-w-sm gap-3"
-          onSubmit={handleSubmit}
-        >
-          <input
-            onChange={handleInputChange}
-            type="text"
-            placeholder="problem id"
-            name="id"
-          ></input>
-          <input
-            onChange={handleInputChange}
-            type="text"
-            placeholder="title"
-            name="title"
-          ></input>
-          <input
-            onChange={handleInputChange}
-            type="text"
-            placeholder="difficulty"
-            name="difficulty"
-          ></input>
-          <input
-            onChange={handleInputChange}
-            type="text"
-            placeholder="category"
-            name="category"
-          ></input>
-          <input
-            onChange={handleInputChange}
-            type="text"
-            placeholder="order"
-            name="order"
-          ></input>
-          <input
-            onChange={handleInputChange}
-            type="text"
-            placeholder="videoId?"
-            name="videoId"
-          ></input>
-          <input
-            onChange={handleInputChange}
-            type="text"
-            placeholder="link?"
-            name="link"
-          ></input>
-          <button className="bg-white">Save to DB</button>
-        </form> */}
       </main>
     </>
   );
