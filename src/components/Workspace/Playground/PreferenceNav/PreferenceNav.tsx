@@ -45,39 +45,44 @@ const PreferenceNav: React.FC<PreferenceNavProps> = ({
   }, [isFullScreen]);
 
   return (
-    <div className="flex items-center justify-between bg-dark-layer-2 h-11 w-full ">
-      <div className="flex items-center text-white">
-        <button className="flex cursor-pointer items-center rounded focus:outline-none bg-dark-fill-3 text-dark-label-2 hover:bg-dark-fill-2  px-2 py-1.5 font-medium">
-          <div className="flex items-center px-1">
-            <div className="text-xs text-label-2 dark:text-dark-label-2">
-              JavaScript
-            </div>
+    <div className="flex items-center justify-between bg-black-pure h-11 w-full border-b border-border-subtle px-4">
+      <div className="flex items-center">
+        <button className="flex cursor-pointer items-center rounded focus:outline-none bg-black-surface text-text-secondary hover:bg-black-hover hover:text-text-primary px-3 py-1.5 font-medium text-sm transition-all duration-150 border border-border-subtle">
+          <div className="flex items-center">
+            <div className="text-xs font-medium">JavaScript</div>
           </div>
         </button>
       </div>
 
-      <div className="flex items-center m-2">
+      <div className="flex items-center gap-1">
         <button
           className="preferenceBtn group"
           onClick={() =>
             setSettings({ ...settings, settingsModalIsOpen: true })
           }
+          aria-label="Settings"
         >
-          <div className="h-4 w-4 text-dark-gray-6 font-bold text-lg">
-            <AiOutlineSetting />
+          <div className="h-4 w-4 text-text-tertiary group-hover:text-text-primary transition-colors duration-150">
+            <AiOutlineSetting className="text-lg" />
           </div>
           <div className="preferenceBtn-tooltip">Settings</div>
         </button>
 
-        <button className="preferenceBtn group" onClick={handleFullScreen}>
-          <div className="h-4 w-4 text-dark-gray-6 font-bold text-lg">
+        <button
+          className="preferenceBtn group"
+          onClick={handleFullScreen}
+          aria-label="Toggle fullscreen"
+        >
+          <div className="h-4 w-4 text-text-tertiary group-hover:text-text-primary transition-colors duration-150">
             {!isFullScreen ? (
-              <AiOutlineFullscreen />
+              <AiOutlineFullscreen className="text-lg" />
             ) : (
-              <AiOutlineFullscreenExit />
+              <AiOutlineFullscreenExit className="text-lg" />
             )}
           </div>
-          <div className="preferenceBtn-tooltip">Full Screen</div>
+          <div className="preferenceBtn-tooltip">
+            {isFullScreen ? "Exit Full Screen" : "Full Screen"}
+          </div>
         </button>
       </div>
       {settings.settingsModalIsOpen && (
