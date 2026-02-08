@@ -6,10 +6,13 @@ export type Example = {
   img?: string;
 };
 
+export type Difficulty = "Easy" | "Medium" | "Hard";
+
 // local problem data
 export type Problem = {
   id: string;
   title: string;
+  difficulty: Difficulty;
   problemStatement: string;
   examples: Example[];
   constraints: string;
