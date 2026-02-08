@@ -1,15 +1,8 @@
-import Image from "next/image";
 import React from "react";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import { BsList } from "react-icons/bs";
 import Link from "next/link";
-import { auth } from "@/firebase/firebase";
-import { authModalState } from "@/atoms/authModalAtom";
-import { useSetRecoilState } from "recoil";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { useRouter } from "next/router";
-import Timer from "../Timer/Timer";
-import Logout from "../Buttons/Logout";
 import { problems } from "@/utils/problems";
 import { Problem } from "@/utils/types/problem";
 
@@ -18,8 +11,6 @@ type TopbarProps = {
 };
 
 const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
-  const [user] = useAuthState(auth);
-  const setAuthModalState = useSetRecoilState(authModalState);
   const router = useRouter();
 
   const handleProblemChange = (isForward: boolean) => {
@@ -27,17 +18,17 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
     const direction = isForward ? 1 : -1;
     const nextProblemOrder = order + direction;
     const nextProblemKey = Object.keys(problems).find(
-      (key) => problems[key].order === nextProblemOrder
+      (key) => problems[key].order === nextProblemOrder,
     );
 
     if (isForward && !nextProblemKey) {
       const firstProblemKey = Object.keys(problems).find(
-        (key) => problems[key].order === 1
+        (key) => problems[key].order === 1,
       );
       router.push(`/problems/${firstProblemKey}`);
     } else if (!isForward && !nextProblemKey) {
       const lastProblemKey = Object.keys(problems).find(
-        (key) => problems[key].order === Object.keys(problems).length
+        (key) => problems[key].order === Object.keys(problems).length,
       );
       router.push(`/problems/${lastProblemKey}`);
     } else {
@@ -92,42 +83,6 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
               Github
             </a>
           </div>
-          {!user && (
-            <Link
-              href="/auth"
-              onClick={() =>
-                setAuthModalState((prev) => ({
-                  ...prev,
-                  isOpen: true,
-                  type: "login",
-                }))
-              }
-            >
-              <button className="bg-dark-fill-3 py-1 px-2 cursor-pointer rounded ">
-                Sign In
-              </button>
-            </Link>
-          )}
-          {user && problemPage && <Timer />}
-          {user && (
-            <div className="cursor-pointer group relative">
-              <Image
-                src="/avatar.png"
-                alt="Avatar"
-                width={30}
-                height={30}
-                className="rounded-full"
-              />
-              <div
-                className="absolute top-10 left-2/4 -translate-x-2/4  mx-auto bg-dark-layer-1 text-gray-200 p-2 rounded shadow-lg 
-								z-40 group-hover:scale-100 scale-0 
-								transition-all duration-300 ease-in-out"
-              >
-                <p className="text-sm">{user.email}</p>
-              </div>
-            </div>
-          )}
-          {user && <Logout />}
         </div>
       </div>
     </nav>

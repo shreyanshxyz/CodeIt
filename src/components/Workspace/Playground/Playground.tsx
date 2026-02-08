@@ -6,12 +6,9 @@ import { vscodeDark } from "@uiw/codemirror-theme-vscode";
 import { javascript } from "@codemirror/lang-javascript";
 import EditorFooter from "./EditorFooter";
 import { Problem } from "@/utils/types/problem";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { auth, firestore } from "@/firebase/firebase";
 import { toast } from "react-toastify";
 import { problems } from "@/utils/problems";
 import { useRouter } from "next/router";
-import { arrayUnion, doc, updateDoc } from "firebase/firestore";
 import useLocalStorage from "@/hooks/useLocalStorage";
 
 type PlaygroundProps = {
@@ -42,20 +39,11 @@ const Playground: React.FC<PlaygroundProps> = ({
     dropdownIsOpen: false,
   });
 
-  const [user] = useAuthState(auth);
   const {
     query: { pid },
   } = useRouter();
 
   const handleSubmit = async () => {
-    if (!user) {
-      toast.error("Please login to submit your code", {
-        position: "top-center",
-        autoClose: 3000,
-        theme: "dark",
-      });
-      return;
-    }
     try {
       userCode = userCode.slice(userCode.indexOf(problem.starterFunctionName));
       const cb = new Function(`return ${userCode}`)();
@@ -74,10 +62,6 @@ const Playground: React.FC<PlaygroundProps> = ({
             setSuccess(false);
           }, 4000);
 
-          const userRef = doc(firestore, "users", user.uid);
-          await updateDoc(userRef, {
-            solvedProblems: arrayUnion(pid),
-          });
           setSolved(true);
         }
       }
@@ -85,7 +69,7 @@ const Playground: React.FC<PlaygroundProps> = ({
       console.log(error.message);
       if (
         error.message.startsWith(
-          "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:"
+          "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
         )
       ) {
         toast.error("Oops! One or more test cases failed", {
@@ -105,12 +89,8 @@ const Playground: React.FC<PlaygroundProps> = ({
 
   useEffect(() => {
     const code = localStorage.getItem(`code-${pid}`);
-    if (user) {
-      setUserCode(code ? JSON.parse(code) : problem.starterCode);
-    } else {
-      setUserCode(problem.starterCode);
-    }
-  }, [pid, user, problem.starterCode]);
+    setUserCode(code ? JSON.parse(code) : problem.starterCode);
+  }, [pid, problem.starterCode]);
 
   const onChange = (value: string) => {
     setUserCode(value);
