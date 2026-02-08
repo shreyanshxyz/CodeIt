@@ -42,8 +42,6 @@ Here are some screenshots from the CodeIt project:
 
 - Main Page
   ![main_page.png](https://pasteimg.com/images/2023/12/28/main_page.png)
-- Authentication
-  ![auth.png](https://pasteimg.com/images/2023/12/28/auth.png)
 - Problem
   ![problemset.png](https://pasteimg.com/images/2023/12/28/problemset.png)
 - Code Playground
@@ -51,31 +49,14 @@ Here are some screenshots from the CodeIt project:
 - Confetti
   ![confetti.png](https://pasteimg.com/images/2023/12/28/confetti.png)
 
-## Environment Variables (.env)
-
-Create a `.env.local` file in the root of your project and add the following variables:
-
-```env
-NEXT_PUBLIC_FIREBASE_API_KEY=
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=
-NEXT_PUBLIC_FIREBASE_APP_ID=
-NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID=
-RECOIL_DUPLICATE_ATOM_KEY_CHECKING_ENABLED=
-```
-
 ## Dependencies
 
 CodeIt relies on the following dependencies:
 
 ###### Dependencies:
 
-- firebase
 - next
 - react-confetti
-- react-firebase-hooks
 - react-icons
 - react-split
 - react-toastify
