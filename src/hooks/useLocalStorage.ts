@@ -1,7 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 
-const useLocalStorage = (key: string, initialValue: string) => {
-  const [value, setValue] = useState(() => {
+const useLocalStorage = (
+  key: string,
+  initialValue: string,
+): [string, Dispatch<SetStateAction<string>>] => {
+  const [value, setValue] = useState<string>(() => {
     try {
       if (typeof window !== "undefined") {
         const item = window.localStorage.getItem(key);

@@ -39,8 +39,12 @@ export async function getStaticPaths() {
 
 // getStaticProps => it fetch the data
 
-export async function getStaticProps({ params }: { params: { pid: string } }) {
-  const { pid } = params;
+export async function getStaticProps({
+  params,
+}: {
+  params: Promise<{ pid: string }>;
+}) {
+  const { pid } = await params;
   const problem = problems[pid];
 
   if (!problem) {

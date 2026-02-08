@@ -3,35 +3,35 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "@codemirror/lang-javascript": "^6.1.6",
-    "@types/node": "18.15.3",
-    "@types/react": "18.0.28",
-    "@types/react-dom": "18.0.11",
-    "@uiw/codemirror-theme-vscode": "^4.19.16",
-    "@uiw/react-codemirror": "^4.19.16",
-    "assert": "^2.0.0",
-    "eslint": "8.36.0",
-    "eslint-config-next": "13.2.4",
-    "next": "13.2.4",
-    "react": "18.2.0",
+    "@codemirror/lang-javascript": "^6.2.2",
+    "@uiw/codemirror-theme-vscode": "^4.23.6",
+    "@uiw/react-codemirror": "^4.23.6",
+    "next": "^15.1.0",
+    "react": "^19.0.0",
     "react-confetti": "^6.1.0",
-    "react-dom": "18.2.0",
-    "react-icons": "^4.8.0",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.4.0",
     "react-split": "^2.0.14",
-    "react-toastify": "^9.1.2",
+    "react-toastify": "^11.0.0",
     "react-youtube": "^10.1.0",
-    "recoil": "^0.7.7",
-    "typescript": "5.0.2"
+    "recoil": "^0.7.7"
   },
   "devDependencies": {
-    "autoprefixer": "^10.4.16",
-    "postcss": "^8.4.32",
-    "tailwindcss": "^3.4.0"
+    "@eslint/eslintrc": "^3.2.0",
+    "@types/node": "^22.10.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "autoprefixer": "^10.4.20",
+    "eslint": "^9.17.0",
+    "eslint-config-next": "^15.1.0",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "typescript": "^5.7.0"
   }
 }
