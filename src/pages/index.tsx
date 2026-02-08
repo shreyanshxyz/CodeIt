@@ -10,61 +10,44 @@ export default function Home() {
   if (!hasMounted) return null;
 
   return (
-    <>
-      <main className="bg-black-pure min-h-screen">
-        <Topbar />
-        <div className="max-w-[1200px] mx-auto px-6 py-10">
-          <h1 className="text-2xl font-bold text-text-primary mb-8 border-b border-border-subtle pb-4">
-            Problemset
-          </h1>
-          <div className="relative overflow-x-auto">
-            {loadingProblems && (
-              <div className="animate-pulse space-y-2">
-                {[...Array(10)].map((_, idx) => (
-                  <LoadingSkeleton key={idx} />
-                ))}
-              </div>
-            )}
-            <table className="text-sm text-left w-full">
-              {!loadingProblems && (
-                <thead className="text-xs uppercase border-b border-border-subtle">
-                  <tr>
-                    <th
-                      scope="col"
-                      className="px-4 py-3 font-medium text-text-tertiary w-12"
-                    >
-                      Status
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-3 font-medium text-text-tertiary"
-                    >
-                      Title
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-4 py-3 font-medium text-text-tertiary w-28"
-                    >
-                      Difficulty
-                    </th>
-                  </tr>
-                </thead>
-              )}
-              <ProblemsTable setLoadingProblems={setLoadingProblems} />
-            </table>
+    <div className="min-h-screen bg-dark-layer-1 flex flex-col">
+      <Topbar />
+      <main className="flex-1 overflow-y-auto">
+        <div className="max-w-[1200px] mx-auto px-6 py-8">
+          <div className="flex items-center gap-6 mb-8">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-green-500"></div>
+              <span className="text-sm text-gray-400">Solved</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-gray-600"></div>
+              <span className="text-sm text-gray-400">Attempted</span>
+            </div>
           </div>
+
+          {loadingProblems && (
+            <div className="space-y-1">
+              {[...Array(10)].map((_, idx) => (
+                <LoadingSkeleton key={idx} />
+              ))}
+            </div>
+          )}
+          <ProblemsTable setLoadingProblems={setLoadingProblems} />
         </div>
       </main>
-    </>
+    </div>
   );
 }
 
 const LoadingSkeleton = () => {
   return (
-    <div className="flex items-center space-x-4 px-4 py-3 border-b border-border-subtle">
-      <div className="w-4 h-4 shrink-0 rounded bg-black-surface"></div>
-      <div className="h-4 w-64 rounded bg-black-surface"></div>
-      <div className="h-4 w-20 rounded bg-black-surface ml-auto"></div>
+    <div className="flex items-center justify-between px-4 py-3 rounded-lg bg-dark-fill-2 animate-pulse">
+      <div className="flex items-center gap-4">
+        <div className="w-5 h-5 shrink-0 rounded-full bg-dark-fill-1"></div>
+        <div className="h-4 w-8 rounded bg-dark-fill-1"></div>
+        <div className="h-4 w-64 rounded bg-dark-fill-1"></div>
+      </div>
+      <div className="h-4 w-16 rounded bg-dark-fill-1"></div>
     </div>
   );
 };
