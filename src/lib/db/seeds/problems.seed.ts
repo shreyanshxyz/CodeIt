@@ -1,3 +1,4 @@
+import 'server-only';
 import db from '../connection';
 import logger from '../../utils/logger';
 
