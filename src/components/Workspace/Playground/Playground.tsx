@@ -9,9 +9,10 @@ import { javascript } from '@codemirror/lang-javascript';
 import EditorFooter from './EditorFooter';
 import { Problem } from '@/utils/types/problem';
 import { toast } from 'react-toastify';
-import { problems } from '@/utils/problems';
 import { useRouter } from 'next/router';
 import useLocalStorage from '@/hooks/useLocalStorage';
+import { useSession } from 'next-auth/react';
+import { api } from '@/lib/api/client';
 
 type PlaygroundProps = {
   problem: Problem;
@@ -24,6 +25,8 @@ export interface ISettings {
   settingsModalIsOpen: boolean;
   dropdownIsOpen: boolean;
 }
+
+type SubmitMode = 'run' | 'submit';
 
 const Playground: React.FC<PlaygroundProps> = ({
   problem,
@@ -41,30 +44,88 @@ const Playground: React.FC<PlaygroundProps> = ({
     dropdownIsOpen: false,
   });
 
+  const { data: session } = useSession();
+
   const {
     query: { pid },
   } = useRouter();
 
-  const handleSubmit = async () => {
+  const executeCodeOnClient = (): { success: boolean; passed: number; total: number; error?: string } => {
     try {
       const functionName = problem.starterFunctionName || '';
-      userCode = userCode.slice(userCode.indexOf(functionName));
-      const cb = new Function(`return ${userCode}`)();
-      const handler = problems[pid as string].handlerFunction;
+      const codeToExtract = userCode.slice(userCode.indexOf(functionName));
+      const userFunction = new Function(`return ${codeToExtract}`)();
 
-      if (typeof handler === "function") {
-        const success = handler(cb);
-        if (success) {
-          toast.success("Congrats! All tests passed!", {
-            position: "top-center",
-            autoClose: 3000,
-            theme: "dark",
-            style: {
-              backgroundColor: "#0a0a0a",
-              color: "#ffffff",
-              border: "1px solid #1f1f1f",
+      const handlerCode = problem.handlerFunction;
+      const testHandler = eval(`(${handlerCode})`);
+
+      const result = testHandler(userFunction);
+
+      return {
+        success: true,
+        passed: 1,
+        total: 1,
+      };
+    } catch (error: any) {
+      const errorMessage = error.message || String(error);
+
+      if (errorMessage.includes('Test case')) {
+        return {
+          success: false,
+          passed: 0,
+          total: 1,
+          error: errorMessage,
+        };
+      }
+
+      return {
+        success: false,
+        passed: 0,
+        total: 1,
+        error: errorMessage,
+      };
+    }
+  };
+
+  const handleSubmit = async (mode: SubmitMode = 'run') => {
+    const result = executeCodeOnClient();
+
+    if (!session?.user && mode === 'submit') {
+      toast.error('Please sign in to submit your solution', {
+        position: 'top-center',
+        autoClose: 3000,
+        theme: "dark",
+      });
+      return;
+    }
+
+    if (result.success) {
+      if (mode === 'run') {
+        toast.success("All tests passed!", {
+          position: "top-center",
+          autoClose: 2000,
+          theme: "dark",
+        });
+      }
+
+      if (mode === 'submit') {
+        toast.success("Submitting solution...", {
+          position: "top-center",
+          autoClose: 2000,
+          theme: "dark",
+        });
+
+        try {
+          await api.createSubmission({
+            problem_id: pid as string,
+            code: userCode,
+            language: 'javascript',
+            test_results: {
+              passed: result.passed,
+              total: result.total,
             },
           });
+
           setSuccess(true);
           setTimeout(() => {
             setSuccess(false);
@@ -72,35 +133,32 @@ const Playground: React.FC<PlaygroundProps> = ({
 
           setSolved(true);
           localStorage.setItem(`solved-${pid}`, "true");
+        } catch (error: any) {
+          console.error('Submission error:', error);
+          toast.error(error.message || 'Failed to submit solution', {
+            position: "top-center",
+            autoClose: 3000,
+            theme: "dark",
+          });
         }
+      } else {
+        setSuccess(true);
+        setTimeout(() => {
+          setSuccess(false);
+        }, 2000);
       }
-    } catch (error: any) {
-      console.log(error.message);
-      if (
-        error.message.startsWith(
-          "AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:",
-        )
-      ) {
-        toast.error("Oops! One or more test cases failed", {
+    } else {
+      if (mode === 'run') {
+        toast.error("One or more test cases failed", {
           position: "top-center",
           autoClose: 3000,
           theme: "dark",
-          style: {
-            backgroundColor: "#0a0a0a",
-            color: "#ffffff",
-            border: "1px solid #1f1f1f",
-          },
         });
       } else {
-        toast.error(error.message, {
+        toast.error(result.error || "One or more test cases failed", {
           position: "top-center",
           autoClose: 3000,
           theme: "dark",
-          style: {
-            backgroundColor: "#0a0a0a",
-            color: "#ffffff",
-            border: "1px solid #1f1f1f",
-          },
         });
       }
     }
@@ -136,7 +194,6 @@ const Playground: React.FC<PlaygroundProps> = ({
           />
         </div>
         <div className="w-full px-5 overflow-auto bg-black-pure">
-          {/* testcase heading */}
           <div className="flex h-10 items-center space-x-6 border-b border-border-subtle">
             <div className="relative flex h-full flex-col justify-center cursor-pointer">
               <div className="text-sm font-medium leading-5 text-text-primary">

@@ -50,12 +50,49 @@ export function EditorPane({ problem }: EditorPaneProps) {
     { value: "cpp", label: "C++" },
   ];
 
+  const executeCode = useCallback((): { success: boolean; passed: number; total: number; error?: string } => {
+    try {
+      const functionName = problem.starter_function_name || '';
+      const codeToExtract = code.slice(code.indexOf(functionName));
+      const userFunction = new Function(`return ${codeToExtract}`)();
+
+      const handlerCode = problem.handler_function;
+      const testHandler = eval(`(${handlerCode})`);
+
+      const result = testHandler(userFunction);
+
+      return {
+        success: true,
+        passed: 1,
+        total: 1,
+      };
+    } catch (error: any) {
+      const errorMessage = error.message || String(error);
+
+      if (errorMessage.includes('Test case')) {
+        return {
+          success: false,
+          passed: 0,
+          total: 1,
+          error: errorMessage,
+        };
+      }
+
+      return {
+        success: false,
+        passed: 0,
+        total: 1,
+        error: errorMessage,
+      };
+    }
+  }, [code, problem.starter_function_name, problem.handler_function]);
+
   const handleRun = useCallback(() => {
     setIsRunning(true);
-    console.log("Running code:", code);
-    // TODO: Implement run logic
+    const result = executeCode();
+    console.log("Run result:", result);
     setTimeout(() => setIsRunning(false), 1000);
-  }, [code]);
+  }, [executeCode]);
 
   const handleSubmit = useCallback(async () => {
     if (!session?.user) {
@@ -65,26 +102,29 @@ export function EditorPane({ problem }: EditorPaneProps) {
 
     setIsSubmitting(true);
     try {
+      const result = executeCode();
       const response = await api.createSubmission({
         problem_id: problem.id,
         code,
         language,
+        test_results: {
+          passed: result.passed,
+          total: result.total,
+          error: result.error,
+        },
       });
 
       if (response.success) {
         console.log('Submission successful:', response.data);
-        // TODO: Show success feedback to user
       } else {
         console.error('Submission failed:', response.data);
-        // TODO: Show error feedback to user
       }
     } catch (error) {
       console.error('Submission error:', error);
-      // TODO: Show error feedback to user
     } finally {
       setIsSubmitting(false);
     }
-  }, [code, language, problem.id, session, router]);
+  }, [code, language, problem.id, session, router, executeCode]);
 
   const handleReset = useCallback(() => {
     setCode(problem.starter_code);

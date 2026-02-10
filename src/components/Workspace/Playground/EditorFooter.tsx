@@ -2,8 +2,10 @@ import React from "react";
 import { BsChevronUp } from "react-icons/bs";
 import { FiPlay } from "react-icons/fi";
 
+type SubmitMode = 'run' | 'submit';
+
 type EditorFooterProps = {
-  handleSubmit: () => void;
+  handleSubmit: (mode: SubmitMode) => void;
 };
 
 const EditorFooter: React.FC<EditorFooterProps> = ({ handleSubmit }) => {
@@ -21,14 +23,14 @@ const EditorFooter: React.FC<EditorFooterProps> = ({ handleSubmit }) => {
         <div className="ml-auto flex items-center space-x-3">
           <button
             className="px-4 py-1.5 text-sm font-medium items-center whitespace-nowrap transition-all duration-150 focus:outline-none inline-flex bg-black-surface hover:bg-black-hover text-text-primary rounded-lg border border-border-subtle"
-            onClick={handleSubmit}
+            onClick={() => handleSubmit('run')}
           >
             <FiPlay className="mr-2" />
             Run
           </button>
           <button
             className="px-4 py-1.5 font-medium items-center transition-all duration-150 focus:outline-none inline-flex text-sm text-black-pure bg-accent-green hover:bg-accent-green-hover rounded-lg"
-            onClick={handleSubmit}
+            onClick={() => handleSubmit('submit')}
           >
             Submit
           </button>
