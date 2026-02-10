@@ -1,10 +1,23 @@
+'use client';
+
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
-import { problems } from "@/utils/problems";
-import { Problem } from "@/utils/types/problem";
+import { useSession } from "next-auth/react";
+import { api } from "@/lib/api/client";
 
 type ProblemsTableProps = {
   setLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
+type Problem = {
+  id: string;
+  title: string;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  category?: string;
+  userProgress?: {
+    status: 'not_started' | 'in_progress' | 'solved';
+    attempts_count: number;
+  };
 };
 
 const DifficultyBadge: React.FC<{ difficulty: string }> = ({ difficulty }) => {
@@ -26,28 +39,22 @@ const DifficultyBadge: React.FC<{ difficulty: string }> = ({ difficulty }) => {
 const ProblemsTable: React.FC<ProblemsTableProps> = ({
   setLoadingProblems,
 }) => {
+  const { data: session } = useSession();
   const [problemsList, setProblemsList] = useState<Problem[]>([]);
-  const [solvedProblems, setSolvedProblems] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     const getProblems = async () => {
       setLoadingProblems(true);
-      const problemsArray = Object.values(problems).sort(
-        (a, b) => a.order - b.order,
-      );
-      setProblemsList(problemsArray);
-
-      // Load solved problems from localStorage
-      const solved = new Set<string>();
-      problemsArray.forEach((problem) => {
-        const isSolved = localStorage.getItem(`solved-${problem.id}`);
-        if (isSolved === "true") {
-          solved.add(problem.id);
+      try {
+        const response = await api.getProblems({ limit: 100 });
+        if (response.success) {
+          setProblemsList(response.data);
         }
-      });
-      setSolvedProblems(solved);
-
-      setLoadingProblems(false);
+      } catch (error) {
+        console.error('Failed to fetch problems:', error);
+      } finally {
+        setLoadingProblems(false);
+      }
     };
 
     getProblems();
@@ -69,7 +76,7 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({
 
       <div className="divide-y divide-dark-divide-border">
         {problemsList.map((problem, idx) => {
-          const isSolved = solvedProblems.has(problem.id);
+          const isSolved = problem.userProgress?.status === 'solved';
           return (
             <Link
               key={problem.id}
@@ -114,4 +121,5 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({
     </div>
   );
 };
+
 export default ProblemsTable;
