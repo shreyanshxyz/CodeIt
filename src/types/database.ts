@@ -10,6 +10,8 @@ export interface User {
   updated_at: Date;
 }
 
+export type UserPublic = Omit<User, 'password_hash'>;
+
 export interface Problem {
   id: string;
   title: string;
