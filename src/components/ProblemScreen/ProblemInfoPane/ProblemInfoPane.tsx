@@ -1,6 +1,29 @@
 import { useState } from "react";
-import { Problem } from "@/utils/types/problem";
 import { PaneHeader } from "../Shared/PaneHeader";
+
+interface Problem {
+  id: string;
+  title: string;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  category?: string;
+  description: string;
+  starter_code: string;
+  starter_function_name: string;
+  handler_function: string;
+  examples: Array<{
+    id: number;
+    inputText: string;
+    outputText: string;
+    explanation?: string;
+    img?: string;
+  }>;
+  constraints: string;
+  tags?: string[];
+  userProgress?: {
+    status: 'not_started' | 'in_progress' | 'solved';
+    attempts_count: number;
+  };
+}
 
 interface ProblemInfoPaneProps {
   problem: Problem;
@@ -52,29 +75,8 @@ export function ProblemInfoPane({ problem }: ProblemInfoPaneProps) {
           <div className="space-y-4">
             <div
               className="prose prose-invert prose-sm max-w-none"
-              dangerouslySetInnerHTML={{ __html: problem.problemStatement }}
+              dangerouslySetInnerHTML={{ __html: problem.description }}
             />
-
-            {(problem.acceptanceRate || problem.totalSubmissions) && (
-              <div className="flex gap-4 pt-4 border-t border-dark-divide-border">
-                {problem.acceptanceRate && (
-                  <div className="flex items-center gap-2 text-xs">
-                    <span className="text-gray-500">Acceptance:</span>
-                    <span className="text-green-500 font-medium">
-                      {problem.acceptanceRate}%
-                    </span>
-                  </div>
-                )}
-                {problem.totalSubmissions && (
-                  <div className="flex items-center gap-2 text-xs">
-                    <span className="text-gray-500">Submissions:</span>
-                    <span className="text-gray-300">
-                      {problem.totalSubmissions}
-                    </span>
-                  </div>
-                )}
-              </div>
-            )}
 
             {problem.tags && problem.tags.length > 0 && (
               <div className="flex flex-wrap gap-2 pt-2">
@@ -128,22 +130,10 @@ export function ProblemInfoPane({ problem }: ProblemInfoPaneProps) {
 
         {activeTab === "constraints" && (
           <div className="space-y-2">
-            {Array.isArray(problem.constraints) ? (
-              problem.constraints.map((constraint: string, index: number) => (
-                <div
-                  key={index}
-                  className="flex items-start gap-2 p-2 bg-dark-layer-1 rounded border border-dark-divide-border"
-                >
-                  <span className="text-green-500 mt-0.5">•</span>
-                  <code className="text-gray-300 text-xs">{constraint}</code>
-                </div>
-              ))
-            ) : (
-              <div
-                className="text-gray-300 text-xs space-y-2"
-                dangerouslySetInnerHTML={{ __html: problem.constraints }}
-              />
-            )}
+            <div
+              className="text-gray-300 text-xs space-y-2"
+              dangerouslySetInnerHTML={{ __html: problem.constraints }}
+            />
           </div>
         )}
 
