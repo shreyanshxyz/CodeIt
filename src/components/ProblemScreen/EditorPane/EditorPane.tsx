@@ -1,15 +1,43 @@
 import { useState, useCallback } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { javascript } from "@codemirror/lang-javascript";
-import { Problem } from "@/utils/types/problem";
+import { useSession } from "next-auth/react";
+import { api } from "@/lib/api/client";
+import { useRouter } from "next/navigation";
 import { PaneHeader } from "../Shared/PaneHeader";
+
+interface Problem {
+  id: string;
+  title: string;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  category?: string;
+  description: string;
+  starter_code: string;
+  starter_function_name: string;
+  handler_function: string;
+  examples: Array<{
+    id: number;
+    inputText: string;
+    outputText: string;
+    explanation?: string;
+    img?: string;
+  }>;
+  constraints: string;
+  tags?: string[];
+  userProgress?: {
+    status: 'not_started' | 'in_progress' | 'solved';
+    attempts_count: number;
+  };
+}
 
 interface EditorPaneProps {
   problem: Problem;
 }
 
 export function EditorPane({ problem }: EditorPaneProps) {
-  const [code, setCode] = useState(problem.starterCode);
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [code, setCode] = useState(problem.starter_code);
   const [language, setLanguage] = useState("javascript");
   const [isRunning, setIsRunning] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -29,16 +57,38 @@ export function EditorPane({ problem }: EditorPaneProps) {
     setTimeout(() => setIsRunning(false), 1000);
   }, [code]);
 
-  const handleSubmit = useCallback(() => {
+  const handleSubmit = useCallback(async () => {
+    if (!session?.user) {
+      router.push('/auth/signin');
+      return;
+    }
+
     setIsSubmitting(true);
-    console.log("Submitting code:", code);
-    // TODO: Implement submit logic
-    setTimeout(() => setIsSubmitting(false), 1000);
-  }, [code]);
+    try {
+      const response = await api.createSubmission({
+        problem_id: problem.id,
+        code,
+        language,
+      });
+
+      if (response.success) {
+        console.log('Submission successful:', response.data);
+        // TODO: Show success feedback to user
+      } else {
+        console.error('Submission failed:', response.data);
+        // TODO: Show error feedback to user
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      // TODO: Show error feedback to user
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [code, language, problem.id, session, router]);
 
   const handleReset = useCallback(() => {
-    setCode(problem.starterCode);
-  }, [problem.starterCode]);
+    setCode(problem.starter_code);
+  }, [problem.starter_code]);
 
   const onChange = useCallback((value: string) => {
     setCode(value);
