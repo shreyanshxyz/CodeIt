@@ -1,5 +1,6 @@
+import 'server-only';
 import { UserRepository } from '../db/repositories/user.repository';
-import { CreateUserDto, UpdateUserDto, User } from '@/types/database';
+import { CreateUserDto, UpdateUserDto, User, UserPublic } from '@/types/database';
 import { ConflictError, NotFoundError } from '../utils/errors';
 import { hash, compare } from 'bcrypt';
 
@@ -64,7 +65,7 @@ export class UserService {
     }
   }
 
-  async getAll(limit = 100, offset = 0): Promise<{ users: User[]; total: number }> {
+  async getAll(limit = 100, offset = 0): Promise<{ users: UserPublic[]; total: number }> {
     const users = await this.userRepo.findAll(limit, offset);
     const total = await this.userRepo.count();
     return { users, total };

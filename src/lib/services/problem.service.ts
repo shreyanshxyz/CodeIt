@@ -1,3 +1,4 @@
+import 'server-only';
 import { ProblemRepository } from '../db/repositories/problem.repository';
 import { ProgressRepository } from '../db/repositories/progress.repository';
 import { Problem, CreateProblemDto } from '@/types/database';

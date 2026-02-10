@@ -1,15 +1,24 @@
+import 'server-only';
 import { SubmissionRepository } from '../db/repositories/submission.repository';
 import { ProblemRepository } from '../db/repositories/problem.repository';
 import { ProgressRepository } from '../db/repositories/progress.repository';
-import { Submission, CreateSubmissionDto } from '@/types/database';
-import { NotFoundError, ValidationError } from '../utils/errors';
-import db from '../db/connection';
+import { Submission } from '@/types/database';
+import { NotFoundError } from '../utils/errors';
+
+export interface CreateSubmissionWithResultDto {
+  problem_id: string;
+  code: string;
+  language?: string;
+  test_results: {
+    passed: number;
+    total: number;
+    error?: string;
+  };
+}
 
 export interface SubmissionResult {
   id: string;
   status: 'accepted' | 'rejected' | 'error';
-  execution_time_ms?: number;
-  memory_used_mb?: number;
   test_cases_passed?: number;
   total_test_cases?: number;
   error_message?: string;
@@ -22,7 +31,7 @@ export class SubmissionService {
 
   async create(
     userId: string,
-    data: Omit<CreateSubmissionDto, 'user_id'>
+    data: CreateSubmissionWithResultDto
   ): Promise<SubmissionResult> {
     const problem = await this.problemRepo.findById(data.problem_id);
     if (!problem) {
@@ -36,99 +45,44 @@ export class SubmissionService {
       language: data.language || 'javascript',
     });
 
-    const startTime = Date.now();
-    try {
-      const result = await this.executeCode(problem.handler_function, data.code);
-      const executionTime = Date.now() - startTime;
+    const { passed, total, error } = data.test_results;
+    const status = error
+      ? 'error'
+      : passed === total
+      ? 'accepted'
+      : 'rejected';
 
-      const status = result.success ? 'accepted' : 'rejected';
-
-      const updatedSubmission = await this.submissionRepo.updateStatus(
-        submission.id,
-        status,
-        {
-          execution_time_ms: executionTime,
-          test_cases_passed: result.passed,
-          total_test_cases: result.total,
-          error_message: result.error,
-        }
-      );
-
-      await this.problemRepo.incrementSubmissionCount(data.problem_id, status === 'accepted');
-
-      await this.progressRepo.createOrUpdate(userId, data.problem_id, {
-        status: status === 'accepted' ? 'solved' : 'in_progress',
-      });
-
-      return {
-        id: submission.id,
-        status,
-        execution_time_ms: executionTime,
-        test_cases_passed: result.passed,
-        total_test_cases: result.total,
-        error_message: result.error,
-      };
-    } catch (error) {
-      const executionTime = Date.now() - startTime;
-      await this.submissionRepo.updateStatus(submission.id, 'error', {
-        execution_time_ms: executionTime,
-        error_message: error instanceof Error ? error.message : 'Unknown error',
-      });
-
-      await this.progressRepo.createOrUpdate(userId, data.problem_id, {
-        status: 'in_progress',
-      });
-
-      return {
-        id: submission.id,
-        status: 'error',
-        execution_time_ms: executionTime,
-        error_message: error instanceof Error ? error.message : 'Unknown error',
-      };
-    }
-  }
-
-  private async executeCode(
-    handlerFunction: string,
-    userCode: string
-  ): Promise<{ success: boolean; passed: number; total: number; error?: string }> {
-    try {
-      const codeToExtract = userCode.slice(userCode.indexOf('function'));
-      const userFunction = new Function(`return ${codeToExtract}`)();
-
-      const handlerCode = handlerFunction;
-      const testHandler = eval(`(${handlerCode})`);
-
-      const result = testHandler(userFunction);
-
-      return {
-        success: true,
-        passed: 1,
-        total: 1,
-      };
-    } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
-      
-      if (errorMessage.includes('Test case')) {
-        return {
-          success: false,
-          passed: 0,
-          total: 1,
-          error: errorMessage,
-        };
+    const updatedSubmission = await this.submissionRepo.updateStatus(
+      submission.id,
+      status,
+      {
+        test_cases_passed: passed,
+        total_test_cases: total,
+        error_message: error,
       }
+    );
 
-      return {
-        success: false,
-        passed: 0,
-        total: 1,
-        error: errorMessage,
-      };
-    }
+    await this.problemRepo.incrementSubmissionCount(data.problem_id, status === 'accepted');
+
+    await this.progressRepo.createOrUpdate(userId, data.problem_id, {
+      status: status === 'accepted' ? 'solved' : 'in_progress',
+    });
+
+    return {
+      id: submission.id,
+      status,
+      test_cases_passed: passed,
+      total_test_cases: total,
+      error_message: error,
+    };
   }
 
-  async getById(id: string): Promise<Submission | null> {
-    return this.submissionRepo.findById(id);
+  async getById(id: string, userId: string): Promise<Submission | null> {
+    const submission = await this.submissionRepo.findById(id);
+    if (submission && submission.user_id !== userId) {
+      throw new NotFoundError('Submission');
+    }
+    return submission;
   }
 
   async getByUser(

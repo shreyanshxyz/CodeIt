@@ -1,3 +1,4 @@
+import 'server-only';
 import { ProgressRepository } from '../db/repositories/progress.repository';
 import { ProblemRepository } from '../db/repositories/problem.repository';
 import { UserProgress } from '@/types/database';
