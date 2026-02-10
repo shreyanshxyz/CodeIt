@@ -1,15 +1,17 @@
-import { useState, useEffect } from "react";
-import PreferenceNav from "./PreferenceNav/PreferenceNav";
-import Split from "react-split";
-import CodeMirror from "@uiw/react-codemirror";
-import { vscodeDark } from "@uiw/codemirror-theme-vscode";
-import { javascript } from "@codemirror/lang-javascript";
-import EditorFooter from "./EditorFooter";
-import { Problem } from "@/utils/types/problem";
-import { toast } from "react-toastify";
-import { problems } from "@/utils/problems";
-import { useRouter } from "next/router";
-import useLocalStorage from "@/hooks/useLocalStorage";
+'use client';
+
+import React, { useState, useEffect } from 'react';
+import PreferenceNav from './PreferenceNav/PreferenceNav';
+import Split from 'react-split';
+import CodeMirror from '@uiw/react-codemirror';
+import { vscodeDark } from '@uiw/codemirror-theme-vscode';
+import { javascript } from '@codemirror/lang-javascript';
+import EditorFooter from './EditorFooter';
+import { Problem } from '@/utils/types/problem';
+import { toast } from 'react-toastify';
+import { problems } from '@/utils/problems';
+import { useRouter } from 'next/router';
+import useLocalStorage from '@/hooks/useLocalStorage';
 
 type PlaygroundProps = {
   problem: Problem;
@@ -29,7 +31,7 @@ const Playground: React.FC<PlaygroundProps> = ({
   setSolved,
 }) => {
   const [activeTestCaseId, setActiveTestCaseId] = useState<number>(0);
-  let [userCode, setUserCode] = useState<string>(problem.starterCode);
+  let [userCode, setUserCode] = useState<string>(problem.starterCode || '');
 
   const [fontSize, setFontSize] = useLocalStorage("lcc-fontSize", "16px");
 
@@ -45,7 +47,8 @@ const Playground: React.FC<PlaygroundProps> = ({
 
   const handleSubmit = async () => {
     try {
-      userCode = userCode.slice(userCode.indexOf(problem.starterFunctionName));
+      const functionName = problem.starterFunctionName || '';
+      userCode = userCode.slice(userCode.indexOf(functionName));
       const cb = new Function(`return ${userCode}`)();
       const handler = problems[pid as string].handlerFunction;
 
@@ -105,7 +108,7 @@ const Playground: React.FC<PlaygroundProps> = ({
 
   useEffect(() => {
     const code = localStorage.getItem(`code-${pid}`);
-    setUserCode(code ? JSON.parse(code) : problem.starterCode);
+    setUserCode(code ? JSON.parse(code) : problem.starterCode || '');
   }, [pid, problem.starterCode]);
 
   const onChange = (value: string) => {
@@ -144,7 +147,7 @@ const Playground: React.FC<PlaygroundProps> = ({
           </div>
 
           <div className="flex gap-2 mt-4">
-            {problem.examples.map((example, index) => (
+            {problem.examples?.map((example, index) => (
               <button
                 className="items-start"
                 key={example.id}
@@ -172,13 +175,13 @@ const Playground: React.FC<PlaygroundProps> = ({
               Input:
             </p>
             <div className="w-full cursor-text rounded-lg border border-border-subtle px-3 py-[10px] bg-black-surface text-text-primary mt-2 font-mono text-sm">
-              {problem.examples[activeTestCaseId].inputText}
+              {problem.examples?.[activeTestCaseId]?.inputText}
             </div>
             <p className="text-sm font-medium mt-4 text-text-secondary">
               Output:
             </p>
             <div className="w-full cursor-text rounded-lg border border-border-subtle px-3 py-[10px] bg-black-surface text-text-primary mt-2 font-mono text-sm">
-              {problem.examples[activeTestCaseId].outputText}
+              {problem.examples?.[activeTestCaseId]?.outputText}
             </div>
           </div>
         </div>
@@ -187,4 +190,5 @@ const Playground: React.FC<PlaygroundProps> = ({
     </div>
   );
 };
+
 export default Playground;
