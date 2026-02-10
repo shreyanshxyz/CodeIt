@@ -61,12 +61,16 @@ class ApiClient {
     problem_id: string;
     code: string;
     language?: string;
+    test_results: {
+      passed: number;
+      total: number;
+      error?: string;
+    };
   }): Promise<{
     success: boolean;
     data: {
       id: string;
       status: 'accepted' | 'rejected' | 'error';
-      execution_time_ms?: number;
       test_cases_passed?: number;
       total_test_cases?: number;
       error_message?: string;

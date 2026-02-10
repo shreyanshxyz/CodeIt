@@ -11,7 +11,7 @@ export async function GET(
 ) {
   try {
     const session = await auth();
-    
+
     if (!session?.user) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized' },
@@ -20,18 +20,7 @@ export async function GET(
     }
 
     const { id } = await params;
-    const submission = await submissionService.getById(id);
-
-    if (!submission) {
-      throw new NotFoundError('Submission');
-    }
-
-    if (submission.user_id !== session.user.id) {
-      return NextResponse.json(
-        { success: false, error: 'Forbidden' },
-        { status: 403 }
-      );
-    }
+    const submission = await submissionService.getById(id, session.user.id);
 
     return NextResponse.json({
       success: true,
