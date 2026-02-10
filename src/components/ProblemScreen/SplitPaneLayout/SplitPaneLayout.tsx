@@ -3,7 +3,30 @@ import { ProblemInfoPane } from "../ProblemInfoPane/ProblemInfoPane";
 import { EditorPane } from "../EditorPane/EditorPane";
 import { TestCasesPane } from "../TestCasesPane/TestCasesPane";
 import { OutputPane } from "../OutputPane/OutputPane";
-import { Problem } from "@/utils/types/problem";
+
+interface Problem {
+  id: string;
+  title: string;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  category?: string;
+  description: string;
+  starter_code: string;
+  starter_function_name: string;
+  handler_function: string;
+  examples: Array<{
+    id: number;
+    inputText: string;
+    outputText: string;
+    explanation?: string;
+    img?: string;
+  }>;
+  constraints: string;
+  tags?: string[];
+  userProgress?: {
+    status: 'not_started' | 'in_progress' | 'solved';
+    attempts_count: number;
+  };
+}
 
 interface SplitPaneLayoutProps {
   problem: Problem;
