@@ -39,6 +39,117 @@ export class ProblemRepository {
     );
   }
 
+  async search(options: {
+    searchTerm?: string;
+    difficulty?: 'Easy' | 'Medium' | 'Hard';
+    category?: string;
+    tag?: string;
+    limit?: number;
+    offset?: number;
+  }): Promise<Problem[]> {
+    const { searchTerm, difficulty, category, tag, limit = 100, offset = 0 } = options;
+
+    const conditions: string[] = [];
+    const values: unknown[] = [];
+    let paramIndex = 1;
+
+    if (searchTerm) {
+      conditions.push(`title ILIKE $${paramIndex++}`);
+      values.push(`%${searchTerm}%`);
+    }
+
+    if (difficulty) {
+      conditions.push(`difficulty = $${paramIndex++}`);
+      values.push(difficulty);
+    }
+
+    if (category) {
+      conditions.push(`category = $${paramIndex++}`);
+      values.push(category);
+    }
+
+    if (tag) {
+      conditions.push(`EXISTS (
+        SELECT 1 FROM problem_tags pt 
+        WHERE pt.problem_id = p.id AND pt.tag = $${paramIndex++}
+      )`);
+      values.push(tag);
+    }
+
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
+    const query = `
+      SELECT p.* FROM problems p
+      ${whereClause}
+      ORDER BY p.order_index ASC
+      LIMIT $${paramIndex++} OFFSET $${paramIndex}
+    `;
+
+    values.push(limit, offset);
+
+    return db.query<Problem>(query, values);
+  }
+
+  async countSearch(options: {
+    searchTerm?: string;
+    difficulty?: 'Easy' | 'Medium' | 'Hard';
+    category?: string;
+    tag?: string;
+  }): Promise<number> {
+    const { searchTerm, difficulty, category, tag } = options;
+
+    const conditions: string[] = [];
+    const values: unknown[] = [];
+    let paramIndex = 1;
+
+    if (searchTerm) {
+      conditions.push(`title ILIKE $${paramIndex++}`);
+      values.push(`%${searchTerm}%`);
+    }
+
+    if (difficulty) {
+      conditions.push(`difficulty = $${paramIndex++}`);
+      values.push(difficulty);
+    }
+
+    if (category) {
+      conditions.push(`category = $${paramIndex++}`);
+      values.push(category);
+    }
+
+    if (tag) {
+      conditions.push(`EXISTS (
+        SELECT 1 FROM problem_tags pt 
+        WHERE pt.problem_id = p.id AND pt.tag = $${paramIndex++}
+      )`);
+      values.push(tag);
+    }
+
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
+
+    const query = `
+      SELECT COUNT(*)::text as count FROM problems p
+      ${whereClause}
+    `;
+
+    const result = await db.queryOne<{ count: string }>(query, values);
+    return result ? parseInt(result.count, 10) : 0;
+  }
+
+  async getUniqueCategories(): Promise<string[]> {
+    const result = await db.query<{ category: string }>(
+      `SELECT DISTINCT category FROM problems WHERE category IS NOT NULL ORDER BY category`
+    );
+    return result.map(r => r.category);
+  }
+
+  async getUniqueTags(): Promise<string[]> {
+    const result = await db.query<{ tag: string }>(
+      `SELECT DISTINCT tag FROM problem_tags ORDER BY tag`
+    );
+    return result.map(r => r.tag);
+  }
+
   async create(data: CreateProblemDto): Promise<Problem> {
     const result = await db.queryOne<Problem>(
       `INSERT INTO problems (
