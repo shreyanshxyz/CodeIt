@@ -20,6 +20,12 @@ export interface PaginatedProblems {
   totalPages: number;
 }
 
+export interface FilterOptions {
+  difficulties: ('Easy' | 'Medium' | 'Hard')[];
+  categories: string[];
+  tags: string[];
+}
+
 export class ProblemService {
   private problemRepo = new ProblemRepository();
   private progressRepo = new ProgressRepository();
@@ -28,18 +34,50 @@ export class ProblemService {
     options: {
       difficulty?: 'Easy' | 'Medium' | 'Hard';
       category?: string;
+      tag?: string;
+      search?: string;
+      sort?: 'order' | 'difficulty' | 'acceptance';
+      sortOrder?: 'asc' | 'desc';
       page?: number;
       limit?: number;
       userId?: string;
     } = {}
   ): Promise<PaginatedProblems> {
-    const { page = 1, limit = 20, difficulty, category, userId } = options;
+    const {
+      page = 1,
+      limit = 20,
+      difficulty,
+      category,
+      tag,
+      search,
+      sort,
+      sortOrder,
+      userId
+    } = options;
     const offset = (page - 1) * limit;
 
     let problems: Problem[];
     let total: number;
 
-    if (difficulty) {
+    const hasSearchFilters = search || tag || difficulty || category;
+
+    if (hasSearchFilters) {
+      problems = await this.problemRepo.search({
+        searchTerm: search,
+        difficulty,
+        category,
+        tag,
+        limit,
+        offset,
+      });
+
+      total = await this.problemRepo.countSearch({
+        searchTerm: search,
+        difficulty,
+        category,
+        tag,
+      });
+    } else if (difficulty) {
       problems = await this.problemRepo.findByDifficulty(difficulty, limit, offset);
       total = await this.problemRepo.countByDifficulty(difficulty);
     } else if (category) {
@@ -48,6 +86,10 @@ export class ProblemService {
     } else {
       problems = await this.problemRepo.findAll(limit, offset);
       total = await this.problemRepo.count();
+    }
+
+    if (sort) {
+      problems = this.sortProblems(problems, sort, sortOrder);
     }
 
     const problemsWithTags = await Promise.all(
@@ -79,6 +121,48 @@ export class ProblemService {
       page,
       limit,
       totalPages: Math.ceil(total / limit),
+    };
+  }
+
+  private sortProblems(
+    problems: Problem[],
+    sort: 'order' | 'difficulty' | 'acceptance',
+    order: 'asc' | 'desc' = 'asc'
+  ): Problem[] {
+    const sorted = [...problems];
+
+    if (sort === 'difficulty') {
+      const difficultyOrder = { Easy: 1, Medium: 2, Hard: 3 };
+      sorted.sort((a, b) => {
+        const aVal = difficultyOrder[a.difficulty];
+        const bVal = difficultyOrder[b.difficulty];
+        return order === 'asc' ? aVal - bVal : bVal - aVal;
+      });
+    } else if (sort === 'acceptance') {
+      sorted.sort((a, b) => {
+        const aRate = a.acceptance_rate || 0;
+        const bRate = b.acceptance_rate || 0;
+        return order === 'asc' ? aRate - bRate : bRate - aRate;
+      });
+    } else if (sort === 'order') {
+      sorted.sort((a, b) => {
+        return order === 'asc' ? a.order_index - b.order_index : b.order_index - a.order_index;
+      });
+    }
+
+    return sorted;
+  }
+
+  async getFilterOptions(): Promise<FilterOptions> {
+    const [categories, tags] = await Promise.all([
+      this.problemRepo.getUniqueCategories(),
+      this.problemRepo.getUniqueTags(),
+    ]);
+
+    return {
+      difficulties: ['Easy', 'Medium', 'Hard'],
+      categories,
+      tags,
     };
   }
 
