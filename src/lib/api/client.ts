@@ -123,6 +123,31 @@ class ApiClient {
     return this.request('/auth/me');
   }
 
+  async getLeaderboard(params?: {
+    page?: number;
+    limit?: number;
+  }): Promise<{
+    success: boolean;
+    data: any[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
+    const searchParams = new URLSearchParams();
+    if (params) {
+      Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined) {
+          searchParams.set(key, String(value));
+        }
+      });
+    }
+    const query = searchParams.toString();
+    return this.request(`/leaderboard${query ? `?${query}` : ''}`);
+  }
+
   async register(data: {
     email: string;
     password: string;
