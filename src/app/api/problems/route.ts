@@ -8,6 +8,16 @@ const problemService = new ProblemService();
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
+    const action = searchParams.get('action');
+
+    if (action === 'filters') {
+      const filterOptions = await problemService.getFilterOptions();
+      return NextResponse.json({
+        success: true,
+        data: filterOptions,
+      });
+    }
+
     const query = problemQuerySchema.parse(Object.fromEntries(searchParams));
 
     const session = await auth();
@@ -16,6 +26,10 @@ export async function GET(request: NextRequest) {
     const result = await problemService.getAll({
       difficulty: query.difficulty,
       category: query.category,
+      tag: query.tag,
+      search: query.search,
+      sort: query.sort,
+      sortOrder: query.sortOrder,
       page: query.page,
       limit: query.limit,
       userId,
@@ -24,6 +38,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({
       success: true,
       data: result.problems,
+      total: result.total,
       pagination: {
         page: result.page,
         limit: result.limit,
