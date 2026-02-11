@@ -27,6 +27,9 @@ export const problemQuerySchema = z.object({
   difficulty: z.enum(['Easy', 'Medium', 'Hard']).optional(),
   category: z.string().optional(),
   tag: z.string().optional(),
+  search: z.string().max(100).optional(),
+  sort: z.enum(['order', 'difficulty', 'acceptance']).optional(),
+  sortOrder: z.enum(['asc', 'desc']).optional(),
   page: z.coerce.number().int().positive().max(10000).default(1),
   limit: z.coerce.number().int().min(1).max(100).default(20),
 });
