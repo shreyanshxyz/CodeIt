@@ -33,9 +33,14 @@ class ApiClient {
     limit?: number;
     difficulty?: 'Easy' | 'Medium' | 'Hard';
     category?: string;
+    tag?: string;
+    search?: string;
+    sort?: 'order' | 'difficulty' | 'acceptance';
+    sortOrder?: 'asc' | 'desc';
   }): Promise<{
     success: boolean;
     data: any[];
+    total: number;
     pagination: { page: number; limit: number; total: number; totalPages: number };
   }> {
     const searchParams = new URLSearchParams();
@@ -48,6 +53,17 @@ class ApiClient {
     }
     const query = searchParams.toString();
     return this.request(`/problems${query ? `?${query}` : ''}`);
+  }
+
+  async getProblemFilters(): Promise<{
+    success: boolean;
+    data: {
+      difficulties: ('Easy' | 'Medium' | 'Hard')[];
+      categories: string[];
+      tags: string[];
+    };
+  }> {
+    return this.request('/problems?action=filters');
   }
 
   async getProblem(id: string): Promise<{
