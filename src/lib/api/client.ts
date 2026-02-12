@@ -90,6 +90,13 @@ class ApiClient {
       test_cases_passed?: number;
       total_test_cases?: number;
       error_message?: string;
+      newAchievements?: Array<{
+        id: string;
+        name: string;
+        description: string;
+        icon: string;
+        rarity: string;
+      }>;
     };
   }> {
     return this.request('/submissions', {
@@ -184,6 +191,37 @@ class ApiClient {
     database: { connected: boolean };
   }> {
     return this.request('/health');
+  }
+
+  async getAchievements(): Promise<{
+    success: boolean;
+    data: {
+      earned: Array<{
+        id: number;
+        user_id: string;
+        achievement_type: string;
+        achieved_at: string;
+        metadata: Record<string, unknown> | null;
+        definition: {
+          id: string;
+          name: string;
+          description: string;
+          icon: string;
+          rarity: string;
+        };
+      }>;
+      locked: Array<{
+        id: string;
+        name: string;
+        description: string;
+        icon: string;
+        rarity: string;
+      }>;
+      totalEarned: number;
+      totalPossible: number;
+    };
+  }> {
+    return this.request('/achievements');
   }
 }
 
