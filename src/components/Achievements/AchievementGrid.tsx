@@ -16,6 +16,7 @@ interface EarnedAchievement {
     name: string;
     description: string;
     icon: string;
+    iconColor?: string;
     rarity: AchievementRarity;
   };
 }
@@ -25,6 +26,7 @@ interface LockedAchievement {
   name: string;
   description: string;
   icon: string;
+  iconColor?: string;
   rarity: AchievementRarity;
 }
 
@@ -69,6 +71,7 @@ const AchievementGrid: React.FC<AchievementGridProps> = ({
               <AchievementBadge
                 key={achievement.id}
                 icon={achievement.definition.icon}
+                iconColor={achievement.definition.iconColor}
                 name={achievement.definition.name}
                 description={achievement.definition.description}
                 rarity={achievement.definition.rarity}
@@ -89,6 +92,7 @@ const AchievementGrid: React.FC<AchievementGridProps> = ({
               <AchievementBadge
                 key={achievement.id}
                 icon={achievement.icon}
+                iconColor={achievement.iconColor}
                 name={achievement.name}
                 description={achievement.description}
                 rarity={achievement.rarity}

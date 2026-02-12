@@ -1,6 +1,17 @@
 'use client';
 
 import React, { useEffect } from 'react';
+import {
+  FaBullseye,
+  FaRocket,
+  FaFire,
+  FaStar,
+  FaGem,
+  FaCrown,
+  FaCheckCircle,
+  FaMagic,
+  FaShieldAlt,
+} from 'react-icons/fa';
 
 interface AchievementModalProps {
   isOpen: boolean;
@@ -10,9 +21,22 @@ interface AchievementModalProps {
     name: string;
     description: string;
     icon: string;
+    iconColor?: string;
     rarity: string;
   }>;
 }
+
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  FaBullseye,
+  FaRocket,
+  FaFire,
+  FaStar,
+  FaGem,
+  FaCrown,
+  FaCheckCircle,
+  FaMagic,
+  FaShieldAlt,
+};
 
 const rarityStyles: Record<string, { border: string; bg: string; text: string }> = {
   common: {
@@ -63,6 +87,7 @@ const AchievementModal: React.FC<AchievementModalProps> = ({
 
   const currentAchievement = achievements[0];
   const styles = rarityStyles[currentAchievement.rarity];
+  const IconComponent = ICON_MAP[currentAchievement.icon] || FaStar;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center">
@@ -92,9 +117,9 @@ const AchievementModal: React.FC<AchievementModalProps> = ({
           Achievement Unlocked
         </span>
 
-        <span className="text-6xl mb-4">
-          {currentAchievement.icon}
-        </span>
+        <IconComponent
+          className={`text-6xl mb-4 ${currentAchievement.iconColor || styles.text}`}
+        />
 
         <h2 className={`text-xl font-bold mb-2 ${styles.text}`}>
           {currentAchievement.name}

@@ -1,17 +1,41 @@
 'use client';
 
 import React from 'react';
+import {
+  FaBullseye,
+  FaRocket,
+  FaFire,
+  FaStar,
+  FaGem,
+  FaCrown,
+  FaCheckCircle,
+  FaMagic,
+  FaShieldAlt,
+} from 'react-icons/fa';
 
 type AchievementRarity = 'common' | 'uncommon' | 'rare' | 'epic' | 'legendary';
 
 interface AchievementBadgeProps {
   icon: string;
+  iconColor?: string;
   name: string;
   description: string;
   rarity: AchievementRarity;
   achievedAt?: string | null;
   isLocked?: boolean;
 }
+
+const ICON_MAP: Record<string, React.ComponentType<{ className?: string }>> = {
+  FaBullseye,
+  FaRocket,
+  FaFire,
+  FaStar,
+  FaGem,
+  FaCrown,
+  FaCheckCircle,
+  FaMagic,
+  FaShieldAlt,
+};
 
 const rarityStyles: Record<AchievementRarity, { border: string; bg: string; glow: string }> = {
   common: {
@@ -43,6 +67,7 @@ const rarityStyles: Record<AchievementRarity, { border: string; bg: string; glow
 
 const AchievementBadge: React.FC<AchievementBadgeProps> = ({
   icon,
+  iconColor,
   name,
   description,
   rarity,
@@ -50,6 +75,7 @@ const AchievementBadge: React.FC<AchievementBadgeProps> = ({
   isLocked = false,
 }) => {
   const styles = rarityStyles[rarity];
+  const IconComponent = ICON_MAP[icon] || FaStar;
 
   return (
     <div
@@ -78,9 +104,11 @@ const AchievementBadge: React.FC<AchievementBadgeProps> = ({
         </div>
       )}
 
-      <span className={`text-4xl mb-2 ${isLocked ? 'grayscale' : ''}`}>
-        {icon}
-      </span>
+      <IconComponent
+        className={`text-4xl mb-2 ${iconColor || (isLocked ? 'text-gray-600' : 'text-gray-200')} ${
+          isLocked ? 'grayscale' : ''
+        }`}
+      />
 
       <h3 className={`text-sm font-semibold text-center ${isLocked ? 'text-gray-500' : 'text-gray-200'}`}>
         {name}
