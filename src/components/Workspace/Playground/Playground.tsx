@@ -13,6 +13,7 @@ import { useRouter } from 'next/router';
 import useLocalStorage from '@/hooks/useLocalStorage';
 import { useSession } from 'next-auth/react';
 import { api } from '@/lib/api/client';
+import AchievementModal from '@/components/Achievements/AchievementModal';
 
 type PlaygroundProps = {
   problem: Problem;
@@ -27,6 +28,14 @@ export interface ISettings {
 }
 
 type SubmitMode = 'run' | 'submit';
+
+type NewAchievement = {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  rarity: string;
+};
 
 const Playground: React.FC<PlaygroundProps> = ({
   problem,
@@ -45,6 +54,9 @@ const Playground: React.FC<PlaygroundProps> = ({
   });
 
   const { data: session } = useSession();
+
+  const [newAchievements, setNewAchievements] = useState<NewAchievement[]>([]);
+  const [showAchievementModal, setShowAchievementModal] = useState(false);
 
   const {
     query: { pid },
@@ -116,7 +128,7 @@ const Playground: React.FC<PlaygroundProps> = ({
         });
 
         try {
-          await api.createSubmission({
+          const response = await api.createSubmission({
             problem_id: pid as string,
             code: userCode,
             language: 'javascript',
@@ -126,13 +138,20 @@ const Playground: React.FC<PlaygroundProps> = ({
             },
           });
 
-          setSuccess(true);
-          setTimeout(() => {
-            setSuccess(false);
-          }, 4000);
+          if (response.success && response.data.status === 'accepted') {
+            setSuccess(true);
+            setTimeout(() => {
+              setSuccess(false);
+            }, 4000);
 
-          setSolved(true);
-          localStorage.setItem(`solved-${pid}`, "true");
+            setSolved(true);
+            localStorage.setItem(`solved-${pid}`, "true");
+
+            if (response.data.newAchievements && response.data.newAchievements.length > 0) {
+              setNewAchievements(response.data.newAchievements);
+              setShowAchievementModal(true);
+            }
+          }
         } catch (error: any) {
           console.error('Submission error:', error);
           toast.error(error.message || 'Failed to submit solution', {
@@ -162,6 +181,11 @@ const Playground: React.FC<PlaygroundProps> = ({
         });
       }
     }
+  };
+
+  const handleCloseAchievementModal = () => {
+    setShowAchievementModal(false);
+    setNewAchievements([]);
   };
 
   useEffect(() => {
@@ -244,6 +268,11 @@ const Playground: React.FC<PlaygroundProps> = ({
         </div>
       </Split>
       <EditorFooter handleSubmit={handleSubmit} />
+      <AchievementModal
+        isOpen={showAchievementModal}
+        onClose={handleCloseAchievementModal}
+        achievements={newAchievements}
+      />
     </div>
   );
 };
