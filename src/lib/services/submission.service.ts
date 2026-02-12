@@ -2,6 +2,7 @@ import 'server-only';
 import { SubmissionRepository } from '../db/repositories/submission.repository';
 import { ProblemRepository } from '../db/repositories/problem.repository';
 import { ProgressRepository } from '../db/repositories/progress.repository';
+import { AchievementService } from './achievement.service';
 import { Submission } from '@/types/database';
 import { NotFoundError } from '../utils/errors';
 
@@ -22,12 +23,20 @@ export interface SubmissionResult {
   test_cases_passed?: number;
   total_test_cases?: number;
   error_message?: string;
+  newAchievements?: Array<{
+    id: string;
+    name: string;
+    description: string;
+    icon: string;
+    rarity: string;
+  }>;
 }
 
 export class SubmissionService {
   private submissionRepo = new SubmissionRepository();
   private problemRepo = new ProblemRepository();
   private progressRepo = new ProgressRepository();
+  private achievementService = new AchievementService();
 
   async create(
     userId: string,
@@ -37,6 +46,9 @@ export class SubmissionService {
     if (!problem) {
       throw new NotFoundError('Problem');
     }
+
+    const previousProgress = await this.progressRepo.findByUserAndProblem(userId, data.problem_id);
+    const wasNotSolved = !previousProgress || previousProgress.status !== 'solved';
 
     const submission = await this.submissionRepo.create({
       user_id: userId,
@@ -52,7 +64,7 @@ export class SubmissionService {
       ? 'accepted'
       : 'rejected';
 
-    const updatedSubmission = await this.submissionRepo.updateStatus(
+    await this.submissionRepo.updateStatus(
       submission.id,
       status,
       {
@@ -68,12 +80,36 @@ export class SubmissionService {
       status: status === 'accepted' ? 'solved' : 'in_progress',
     });
 
+    let newAchievements: SubmissionResult['newAchievements'] = [];
+
+    if (status === 'accepted' && wasNotSolved) {
+      const awardedAchievements = await this.achievementService.checkAndAwardAchievements(userId);
+      
+      const firstAttemptAchievement = await this.achievementService.awardFirstAttemptAchievement(
+        userId,
+        data.problem_id
+      );
+      
+      if (firstAttemptAchievement) {
+        awardedAchievements.push(firstAttemptAchievement);
+      }
+
+      newAchievements = awardedAchievements.map(a => ({
+        id: a.definition.id,
+        name: a.definition.name,
+        description: a.definition.description,
+        icon: a.definition.icon,
+        rarity: a.definition.rarity,
+      }));
+    }
+
     return {
       id: submission.id,
       status,
       test_cases_passed: passed,
       total_test_cases: total,
       error_message: error,
+      newAchievements,
     };
   }
 
