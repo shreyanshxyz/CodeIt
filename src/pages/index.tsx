@@ -3,12 +3,11 @@ import ProblemFilters from "@/components/ProblemFilters/ProblemFilters";
 import Topbar from "@/components/Topbar/Topbar";
 import useHasMounted from "@/hooks/useHasMounted";
 import { api } from "@/lib/api/client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 
 type Difficulty = 'Easy' | 'Medium' | 'Hard';
 
 export default function Home() {
-  const [loadingProblems, setLoadingProblems] = useState(true);
   const hasMounted = useHasMounted();
 
   const [search, setSearch] = useState('');
@@ -49,6 +48,15 @@ export default function Home() {
     setResultsCount(count);
   }, []);
 
+  const filters = useMemo(() => ({
+    search: search || undefined,
+    difficulty,
+    category,
+    tag,
+    sortBy,
+    sortOrder,
+  }), [search, difficulty, category, tag, sortBy, sortOrder]);
+
   if (!hasMounted) return null;
 
   return (
@@ -86,43 +94,12 @@ export default function Home() {
             resultsCount={resultsCount}
           />
 
-          {loadingProblems && (
-            <div className="space-y-1">
-              {[...Array(5)].map((_, idx) => (
-                <LoadingSkeleton key={idx} />
-              ))}
-            </div>
-          )}
           <ProblemsTable
-            setLoadingProblems={setLoadingProblems}
-            filters={{
-              search: search || undefined,
-              difficulty,
-              category,
-              tag,
-              sortBy,
-              sortOrder,
-            }}
+            filters={filters}
             onResultsCount={handleResultsCount}
           />
         </div>
       </main>
-    </div>
-  );
-};
-
-const LoadingSkeleton = () => {
-  return (
-    <div className="flex items-center justify-between px-4 py-3 rounded-lg bg-dark-fill-2 animate-pulse">
-      <div className="flex items-center gap-4">
-        <div className="w-5 h-5 shrink-0 rounded-full bg-dark-fill-1"></div>
-        <div className="h-4 w-8 rounded bg-dark-fill-1 hidden sm:block"></div>
-        <div className="h-4 w-48 sm:w-64 rounded bg-dark-fill-1"></div>
-      </div>
-      <div className="flex items-center gap-4">
-        <div className="h-4 w-12 rounded bg-dark-fill-1 hidden sm:block"></div>
-        <div className="h-4 w-16 rounded bg-dark-fill-1"></div>
-      </div>
     </div>
   );
 };
