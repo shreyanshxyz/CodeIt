@@ -84,7 +84,12 @@ const LeaderboardTable: React.FC<LeaderboardTableProps> = ({ entries, loading })
                       {entry.name[0].toUpperCase()}
                     </div>
                   )}
-                  <span className="text-gray-200">{entry.name}</span>
+                  <Link
+                    href={`/profile/${entry.userId}`}
+                    className="text-gray-200 hover:text-white transition-colors"
+                  >
+                    {entry.name}
+                  </Link>
                 </div>
               </td>
               <td className="px-6 py-4 text-right text-green-400 font-semibold">
