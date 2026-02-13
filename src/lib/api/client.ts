@@ -193,7 +193,7 @@ class ApiClient {
     return this.request('/health');
   }
 
-  async getAchievements(): Promise<{
+   async getAchievements(): Promise<{
     success: boolean;
     data: {
       earned: Array<{
@@ -222,6 +222,40 @@ class ApiClient {
     };
   }> {
     return this.request('/achievements');
+  }
+
+  async getUser(id: string): Promise<{
+    success: boolean;
+    data: {
+      user: {
+        id: string;
+        name: string;
+        email: string;
+        avatar_url: string | null;
+        github_username: string | null;
+        role: 'user' | 'admin';
+        created_at: string;
+      };
+      stats: any;
+      achievements: any[];
+      recentSubmissions: any[];
+    };
+  }> {
+    return this.request(`/users/${id}`);
+  }
+
+  async updateUser(id: string, data: {
+    name?: string;
+    avatar_url?: string;
+    github_username?: string;
+  }): Promise<{
+    success: boolean;
+    data: any;
+  }> {
+    return this.request(`/users/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify(data),
+    });
   }
 }
 
