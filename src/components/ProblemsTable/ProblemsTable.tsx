@@ -1,14 +1,13 @@
 'use client';
 
 import Link from "next/link";
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { api } from "@/lib/api/client";
 
 type Difficulty = 'Easy' | 'Medium' | 'Hard';
 
 type ProblemsTableProps = {
-  setLoadingProblems: React.Dispatch<React.SetStateAction<boolean>>;
   filters?: {
     search?: string;
     difficulty?: Difficulty | null;
@@ -66,16 +65,16 @@ const AcceptanceBadge: React.FC<{ rate: number | null | undefined }> = ({ rate }
 };
 
 const ProblemsTable: React.FC<ProblemsTableProps> = ({
-  setLoadingProblems,
   filters,
   onResultsCount,
 }) => {
   const { data: session } = useSession();
   const [problemsList, setProblemsList] = useState<Problem[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const getProblems = async () => {
-      setLoadingProblems(true);
+      setLoading(true);
       try {
         const response = await api.getProblems({
           limit: 100,
@@ -94,7 +93,7 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({
         console.error('Failed to fetch problems:', error);
         onResultsCount?.(0);
       } finally {
-        setLoadingProblems(false);
+        setLoading(false);
       }
     };
 
@@ -103,26 +102,37 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({
     }, filters?.search ? 300 : 0);
 
     return () => clearTimeout(debounceTimer);
-  }, [setLoadingProblems, filters, onResultsCount]);
+  }, [
+    filters?.search,
+    filters?.difficulty,
+    filters?.category,
+    filters?.tag,
+    filters?.sortBy,
+    filters?.sortOrder,
+  ]);
 
   return (
     <div className="bg-dark-layer-2 rounded-lg border border-dark-divide-border overflow-hidden">
       <div className="flex items-center px-4 py-3 bg-dark-layer-1 border-b border-dark-divide-border">
-        <div className="w-10 text-xs font-medium text-gray-500 uppercase tracking-wider">
-          Status
-        </div>
-        <div className="flex-1 text-xs font-medium text-gray-500 uppercase tracking-wider">
+        <div className="w-12 shrink-0"></div>
+        <div className="flex-1 text-xs font-medium text-gray-500 uppercase">
           Title
         </div>
-        <div className="w-20 text-xs font-medium text-gray-500 uppercase tracking-wider text-right hidden sm:block">
+        <div className="w-20 shrink-0 text-xs font-medium text-gray-500 uppercase text-right hidden sm:block">
           Acceptance
         </div>
-        <div className="w-20 text-xs font-medium text-gray-500 uppercase tracking-wider text-right">
+        <div className="w-20 shrink-0 text-xs font-medium text-gray-500 uppercase text-right">
           Difficulty
         </div>
       </div>
 
-      {problemsList.length === 0 ? (
+      {loading ? (
+        <div className="divide-y divide-dark-divide-border">
+          {[...Array(5)].map((_, idx) => (
+            <LoadingSkeleton key={idx} />
+          ))}
+        </div>
+      ) : problemsList.length === 0 ? (
         <div className="px-4 py-8 text-center text-gray-500">
           No problems found matching your criteria
         </div>
@@ -136,7 +146,7 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({
                 href={`/problems/${problem.id}`}
                 className="flex items-center px-4 py-3 hover:bg-dark-fill-2 transition-colors group"
               >
-                <div className="w-10 flex items-center justify-center">
+                <div className="w-12 flex items-center justify-center">
                   {isSolved ? (
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -184,6 +194,24 @@ const ProblemsTable: React.FC<ProblemsTableProps> = ({
     </div>
   );
 };
+
+const LoadingSkeleton = () => (
+  <div className="flex items-center px-4 py-3">
+    <div className="w-12 shrink-0 flex items-center justify-center">
+      <div className="w-5 h-5 rounded-full bg-dark-fill-3 animate-pulse"></div>
+    </div>
+    <div className="flex-1 flex items-center gap-3">
+      <div className="h-4 w-8 rounded bg-dark-fill-3 animate-pulse hidden sm:block"></div>
+      <div className="h-4 w-48 sm:w-64 rounded bg-dark-fill-3 animate-pulse"></div>
+    </div>
+    <div className="w-20 shrink-0 hidden sm:flex justify-end">
+      <div className="h-4 w-12 rounded bg-dark-fill-3 animate-pulse"></div>
+    </div>
+    <div className="w-20 shrink-0 flex justify-end">
+      <div className="h-4 w-16 rounded bg-dark-fill-3 animate-pulse"></div>
+    </div>
+  </div>
+);
 
 export default ProblemsTable;
 
