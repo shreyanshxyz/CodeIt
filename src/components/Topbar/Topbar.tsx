@@ -80,9 +80,12 @@ const Topbar: React.FC<TopbarProps> = ({ problemPage }) => {
                 <FaUserCircle className="h-8 w-8 text-gray-400" />
               )}
 
-              <span className="text-sm text-gray-300 max-w-[150px] truncate">
+              <Link
+                href={`/profile/${session.user.id}`}
+                className="text-sm text-gray-300 max-w-[150px] truncate hover:text-white transition-colors"
+              >
                 {session.user.name}
-              </span>
+              </Link>
 
               <button
                 onClick={handleSignOut}
