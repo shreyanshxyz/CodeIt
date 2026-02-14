@@ -133,13 +133,17 @@ Open [http://localhost:3000](http://localhost:3000) in your browser.
 ## Screenshots
 
 - Main Page
-  ![main_page.png](https://pasteimg.com/images/2023/12/28/main_page.png)
-- Problem
-  ![problemset.png](https://pasteimg.com/images/2023/12/28/problemset.png)
-- Code Playground
-  ![playground.png](https://pasteimg.com/images/2023/12/28/playground.png)
-- Confetti
-  ![confetti.png](https://pasteimg.com/images/2023/12/28/confetti.png)
+  ![Main Screen](screens/main-screen.png)
+- Problem Screen
+  ![Problem Screen](screens/problem-screen.png)
+- Leaderboard
+  ![Leaderboard](screens/leaderboard-screen.png)
+- Profile
+  ![Profile](screens/profile-screen.png)
+- Achievements
+  ![Achievements](screens/achievement-screen.png)
+- Login
+  ![Login](screens/login-screen.png)
 
 ## License
 
