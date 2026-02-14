@@ -1,4 +1,3 @@
-import 'server-only';
 import { Pool, PoolClient, QueryResultRow } from 'pg';
 import logger from '../utils/logger';
 import { DatabaseError } from '../utils/errors';
