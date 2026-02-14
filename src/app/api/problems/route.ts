@@ -48,27 +48,8 @@ export async function GET(request: NextRequest) {
     });
   } catch (error) {
     console.error('Get problems error:', error);
-    
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
-    const errorStack = error instanceof Error ? error.stack : undefined;
-    const errorName = error instanceof Error ? error.constructor.name : 'Error';
-    
-    console.error('Error details:', {
-      name: errorName,
-      message: errorMessage,
-      stack: errorStack,
-    });
-    
     return NextResponse.json(
-      { 
-        success: false, 
-        error: 'Failed to fetch problems',
-        details: {
-          name: errorName,
-          message: errorMessage,
-          stack: process.env.NODE_ENV !== 'production' ? errorStack : undefined,
-        }
-      },
+      { success: false, error: 'Failed to fetch problems' },
       { status: 500 }
     );
   }

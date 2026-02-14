@@ -7,13 +7,6 @@ class DatabaseConnection {
   private static instance: DatabaseConnection;
 
   private constructor() {
-    console.log("=== DB Connection Debug ===");
-    console.log("DATABASE_URL exists:", !!process.env.DATABASE_URL);
-    console.log("DATABASE_URL length:", process.env.DATABASE_URL?.length);
-    console.log("DB_HOST:", process.env.DB_HOST);
-    console.log("NODE_ENV:", process.env.NODE_ENV);
-    console.log("==========================");
-
     this.pool = new Pool(this.getPoolConfig());
 
     this.pool.on("error", (err) => {
