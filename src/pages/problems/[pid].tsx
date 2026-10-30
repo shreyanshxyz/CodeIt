@@ -60,7 +60,7 @@ const ProblemPage = () => {
   if (!hasMounted || loading) {
     return (
       <div className="flex flex-col h-screen bg-dark-layer-1">
-        <Topbar problemPage />
+        <Topbar active="problems" />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-gray-500">Loading...</div>
         </div>
@@ -71,7 +71,7 @@ const ProblemPage = () => {
   if (!problem) {
     return (
       <div className="flex flex-col h-screen bg-dark-layer-1">
-        <Topbar problemPage />
+        <Topbar active="problems" />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-gray-500">Problem not found</div>
         </div>
@@ -81,7 +81,7 @@ const ProblemPage = () => {
 
   return (
     <div className="flex flex-col h-screen bg-dark-layer-1">
-      <Topbar problemPage />
+      <Topbar active="problems" />
       <div className="flex-1 overflow-hidden">
         <SplitPaneLayout problem={problem} />
       </div>
