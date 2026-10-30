@@ -60,7 +60,7 @@ export default function LeaderboardPage() {
 
   return (
     <div className="min-h-screen bg-dark-layer-1">
-      <Topbar />
+      <Topbar active="leaderboard" />
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8">

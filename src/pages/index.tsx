@@ -61,7 +61,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-dark-layer-1 flex flex-col">
-      <Topbar />
+      <Topbar active="problems" />
       <main className="flex-1 overflow-y-auto">
         <div className="max-w-[1200px] mx-auto px-4 sm:px-6 py-6 sm:py-8">
           <div className="flex items-center gap-4 sm:gap-6 mb-4">
